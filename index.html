@@ -39,11 +39,41 @@
 <body>
   <div id="root"></div>
   <script type="text/babel">
-    const { useState, useCallback } = React;
+    const { useState, useCallback, useEffect, useContext, createContext } = React;
+
+    /* ─── i18n ─── */
+
+    const META = {
+      es: {
+        title: 'FlexNet Agents — Guía de Instalación y Configuración',
+        description: 'Guía completa de instalación y configuración de FlexNet Agents de Flexera para Windows, Linux, macOS y Contenedores.',
+      },
+      en: {
+        title: 'FlexNet Agents — Installation and Configuration Guide',
+        description: 'Complete installation and configuration guide for Flexera FlexNet Agents on Windows, Linux, macOS and Containers.',
+      },
+    };
+
+    function detectLang() {
+      try {
+        const q = new URLSearchParams(window.location.search).get('lang');
+        if (q === 'es' || q === 'en') return q;
+      } catch (e) {}
+      try {
+        const saved = window.localStorage.getItem('flexera-guide-lang');
+        if (saved === 'es' || saved === 'en') return saved;
+      } catch (e) {}
+      const nav = (navigator.language || 'es').toLowerCase();
+      return nav.startsWith('es') ? 'es' : 'en';
+    }
+
+    const LangContext = createContext({ lang: 'es', t: (es) => es });
+    const useLang = () => useContext(LangContext);
 
     /* ─── Utility Components ─── */
 
     function CodeBlock({ children, title }) {
+      const { t } = useLang();
       const [copied, setCopied] = useState(false);
       const handleCopy = useCallback(() => {
         if (navigator.clipboard) {
@@ -66,7 +96,7 @@
             <div style={{ background: '#1a1a2e', padding: '8px 16px', fontSize: 12, color: '#8892b0', fontFamily: "'SF Mono', Consolas, monospace", display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
               <span>{title}</span>
               <button onClick={handleCopy} style={{ background: 'none', border: '1px solid #333', color: copied ? '#26a269' : '#8892b0', padding: '2px 10px', borderRadius: 4, cursor: 'pointer', fontSize: 11, transition: 'color 0.2s' }}>
-                {copied ? '✓ Copiado' : 'Copiar'}
+                {copied ? t('✓ Copiado', '✓ Copied') : t('Copiar', 'Copy')}
               </button>
             </div>
           )}
@@ -78,11 +108,12 @@
     }
 
     function InfoBox({ type = 'info', children }) {
+      const { t } = useLang();
       const styles = {
-        info:    { bg: '#0d2847', border: '#1a5fb4', icon: 'ℹ️', label: 'Información' },
-        warning: { bg: '#3d2e00', border: '#c4a000', icon: '⚠️', label: 'Advertencia' },
-        danger:  { bg: '#3d0000', border: '#c01c28', icon: '🚨', label: 'Importante' },
-        tip:     { bg: '#0d3324', border: '#26a269', icon: '💡', label: 'Consejo' },
+        info:    { bg: '#0d2847', border: '#1a5fb4', icon: 'ℹ️', label: t('Información', 'Information') },
+        warning: { bg: '#3d2e00', border: '#c4a000', icon: '⚠️', label: t('Advertencia', 'Warning') },
+        danger:  { bg: '#3d0000', border: '#c01c28', icon: '🚨', label: t('Importante', 'Important') },
+        tip:     { bg: '#0d3324', border: '#26a269', icon: '💡', label: t('Consejo', 'Tip') },
       };
       const s = styles[type];
       return (
@@ -129,11 +160,27 @@
     function SubTabs({ tabs, active, onChange }) {
       return (
         <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
-          {tabs.map(t => (
-            <button key={t.id} onClick={() => onChange(t.id)} style={{ padding: '8px 18px', borderRadius: 8, border: active === t.id ? '1px solid #f48c06' : '1px solid #1e2a3a', background: active === t.id ? '#f48c0618' : '#111827', color: active === t.id ? '#f48c06' : '#8892b0', cursor: 'pointer', fontSize: 13, fontWeight: 600, transition: 'all 0.2s' }}>
-              {t.label}
+          {tabs.map(tb => (
+            <button key={tb.id} onClick={() => onChange(tb.id)} style={{ padding: '8px 18px', borderRadius: 8, border: active === tb.id ? '1px solid #f48c06' : '1px solid #1e2a3a', background: active === tb.id ? '#f48c0618' : '#111827', color: active === tb.id ? '#f48c06' : '#8892b0', cursor: 'pointer', fontSize: 13, fontWeight: 600, transition: 'all 0.2s' }}>
+              {tb.label}
             </button>
           ))}
+        </div>
+      );
+    }
+
+    function LangSwitch() {
+      const { lang, setLang } = useLang();
+      const opt = (id, label) => (
+        <button key={id} onClick={() => setLang(id)} aria-pressed={lang === id}
+          style={{ padding: '6px 14px', border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 700, letterSpacing: 0.5, background: lang === id ? '#f48c06' : 'transparent', color: lang === id ? '#0a0e1a' : '#8892b0', transition: 'all 0.15s' }}>
+          {label}
+        </button>
+      );
+      return (
+        <div role="group" aria-label="Language" style={{ marginLeft: 'auto', display: 'flex', borderRadius: 8, overflow: 'hidden', border: '1px solid #2a2a3a', background: '#111827' }}>
+          {opt('es', 'ES')}
+          {opt('en', 'EN')}
         </div>
       );
     }
@@ -141,18 +188,32 @@
     /* ─── Section: Overview ─── */
 
     function OverviewContent() {
+      const { t } = useLang();
+      const cards = [
+        { title: 'FlexNet Agent (Eng. Apps)', ver: 'v5.17',
+          desc: t('Se instala en cada máquina con servidor de licencias FlexNet Publisher. Comunica datos de uso al servidor FlexNet Manager for Engineering Applications.',
+                  'Installed on every machine running a FlexNet Publisher license server. Reports usage data to the FlexNet Manager for Engineering Applications server.'),
+          tags: [t('Licencias concurrentes', 'Concurrent licenses'), t('Uso de software', 'Software usage'), 'lmgrd/lmstat'] },
+        { title: 'FlexNet Inventory Agent (FNMS)', ver: 'v17.x+',
+          desc: t('Se despliega en dispositivos gestionados para recolectar inventario de hardware y software. Se comunica con Inventory Beacons que reportan al servidor central.',
+                  'Deployed on managed devices to collect hardware and software inventory. Communicates with Inventory Beacons, which report to the central server.'),
+          tags: [t('Inventario SW/HW', 'SW/HW inventory'), 'Discovery', 'Compliance'] },
+        { title: 'Flexera Kubernetes Inv. Agent', ver: '2024+',
+          desc: t('Agente específico para recolectar inventario de clústeres Kubernetes: nodos, pods, imágenes de contenedor y software dentro de ellas.',
+                  'Dedicated agent that collects inventory from Kubernetes clusters: nodes, pods, container images and the software inside them.'),
+          tags: ['Kubernetes', 'OCI', t('Contenedores', 'Containers')] },
+      ];
       return (
         <div>
-          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 8px', fontWeight: 800 }}>¿Qué son los FlexNet Agents?</h2>
+          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 8px', fontWeight: 800 }}>{t('¿Qué son los FlexNet Agents?', 'What are FlexNet Agents?')}</h2>
           <p style={{ color: '#8892b0', fontSize: 15, lineHeight: 1.8, margin: '0 0 20px' }}>
-            Flexera ofrece distintos tipos de agentes según el producto y objetivo. Los dos principales son el <strong style={{ color: '#f48c06' }}>FlexNet Agent</strong> (para Engineering Applications) y el <strong style={{ color: '#f48c06' }}>FlexNet Inventory Agent</strong> (para IT Asset Management / FlexNet Manager Suite). Esta guía cubre ambos.
+            {t(
+              <>Flexera ofrece distintos tipos de agentes según el producto y objetivo. Los dos principales son el <strong style={{ color: '#f48c06' }}>FlexNet Agent</strong> (para Engineering Applications) y el <strong style={{ color: '#f48c06' }}>FlexNet Inventory Agent</strong> (para IT Asset Management / FlexNet Manager Suite). Esta guía cubre ambos.</>,
+              <>Flexera offers different types of agents depending on the product and the goal. The two main ones are the <strong style={{ color: '#f48c06' }}>FlexNet Agent</strong> (for Engineering Applications) and the <strong style={{ color: '#f48c06' }}>FlexNet Inventory Agent</strong> (for IT Asset Management / FlexNet Manager Suite). This guide covers both.</>
+            )}
           </p>
           <div className="cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, margin: '24px 0' }}>
-            {[
-              { title: 'FlexNet Agent (Eng. Apps)', ver: 'v5.17', desc: 'Se instala en cada máquina con servidor de licencias FlexNet Publisher. Comunica datos de uso al servidor FlexNet Manager for Engineering Applications.', tags: ['Licencias concurrentes', 'Uso de software', 'lmgrd/lmstat'] },
-              { title: 'FlexNet Inventory Agent (FNMS)', ver: 'v17.x+', desc: 'Se despliega en dispositivos gestionados para recolectar inventario de hardware y software. Se comunica con Inventory Beacons que reportan al servidor central.', tags: ['Inventario SW/HW', 'Discovery', 'Compliance'] },
-              { title: 'Flexera Kubernetes Inv. Agent', ver: '2024+', desc: 'Agente específico para recolectar inventario de clústeres Kubernetes: nodos, pods, imágenes de contenedor y software dentro de ellas.', tags: ['Kubernetes', 'OCI', 'Contenedores'] },
-            ].map((c, i) => (
+            {cards.map((c, i) => (
               <div key={i} style={{ background: '#111827', border: '1px solid #1e2a3a', borderRadius: 12, padding: 20 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, flexWrap: 'wrap', gap: 8 }}>
                   <h3 style={{ color: '#f0f0f0', fontSize: 16, margin: 0, fontWeight: 700 }}>{c.title}</h3>
@@ -160,36 +221,41 @@
                 </div>
                 <p style={{ color: '#8892b0', fontSize: 13, lineHeight: 1.7, margin: '0 0 14px' }}>{c.desc}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-                  {c.tags.map((t, j) => <span key={j} style={{ fontSize: 11, padding: '3px 8px', borderRadius: 6, background: '#1a2332', color: '#6e8bb8', border: '1px solid #253347' }}>{t}</span>)}
+                  {c.tags.map((tg, j) => <span key={j} style={{ fontSize: 11, padding: '3px 8px', borderRadius: 6, background: '#1a2332', color: '#6e8bb8', border: '1px solid #253347' }}>{tg}</span>)}
                 </div>
               </div>
             ))}
           </div>
 
-          <h3 style={{ color: '#f0f0f0', fontSize: 18, marginTop: 32 }}>Requisitos Generales Comunes</h3>
+          <h3 style={{ color: '#f0f0f0', fontSize: 18, marginTop: 32 }}>{t('Requisitos Generales Comunes', 'Common General Requirements')}</h3>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 12 }}>
-              <thead><TRow header cells={['Requisito', 'FlexNet Agent (Eng. Apps)', 'FlexNet Inventory Agent']} /></thead>
+              <thead><TRow header cells={[t('Requisito', 'Requirement'), 'FlexNet Agent (Eng. Apps)', 'FlexNet Inventory Agent']} /></thead>
               <tbody>
-                <TRow cells={['Arquitectura', '64-bit obligatorio (Windows y Linux)', '64-bit recomendado']} />
-                <TRow cells={['RAM mínima', '512 MB recomendado', '2 GB recomendado']} />
-                <TRow cells={['Puertos por defecto', 'Puerto del servidor FNMEA (ej. 443/8888)', 'HTTP 80 (beacon upload/download)']} />
-                <TRow cells={['Permisos', 'Administrador local / root', 'Administrador / root (servicios del sistema)']} />
-                <TRow cells={['Conectividad', 'Al servidor FlexNet Manager', 'Al Inventory Beacon asignado']} />
+                <TRow cells={[t('Arquitectura', 'Architecture'), t('64-bit obligatorio (Windows y Linux)', '64-bit required (Windows and Linux)'), t('64-bit recomendado', '64-bit recommended')]} />
+                <TRow cells={[t('RAM mínima', 'Minimum RAM'), t('512 MB recomendado', '512 MB recommended'), t('2 GB recomendado', '2 GB recommended')]} />
+                <TRow cells={[t('Puertos por defecto', 'Default ports'), t('Puerto del servidor FNMEA (ej. 443/8888)', 'FNMEA server port (e.g. 443/8888)'), t('HTTP 80 (beacon upload/download)', 'HTTP 80 (beacon upload/download)')]} />
+                <TRow cells={[t('Permisos', 'Permissions'), t('Administrador local / root', 'Local administrator / root'), t('Administrador / root (servicios del sistema)', 'Administrator / root (system services)')]} />
+                <TRow cells={[t('Conectividad', 'Connectivity'), t('Al servidor FlexNet Manager', 'To the FlexNet Manager server'), t('Al Inventory Beacon asignado', 'To the assigned Inventory Beacon')]} />
               </tbody>
             </table>
           </div>
-          <InfoBox type="info">Todos los instaladores se descargan desde el <strong>Flexera Product and License Center</strong> (community.flexera.com → Download Products and Licenses). Necesitas credenciales activas de Flexera Community.</InfoBox>
+          <InfoBox type="info">
+            {t(
+              <>Todos los instaladores se descargan desde el <strong>Flexera Product and License Center</strong> (community.flexera.com → Download Products and Licenses). Necesitas credenciales activas de Flexera Community.</>,
+              <>All installers are downloaded from the <strong>Flexera Product and License Center</strong> (community.flexera.com → Download Products and Licenses). You need active Flexera Community credentials.</>
+            )}
+          </InfoBox>
 
-          <h3 style={{ color: '#f0f0f0', fontSize: 18, marginTop: 32 }}>Arquitectura de Comunicación</h3>
+          <h3 style={{ color: '#f0f0f0', fontSize: 18, marginTop: 32 }}>{t('Arquitectura de Comunicación', 'Communication Architecture')}</h3>
           <div className="arch-diagram" style={{ background: '#0d1117', borderRadius: 12, padding: 24, border: '1px solid #1e2a3a', margin: '12px 0', fontFamily: "'SF Mono', Consolas, monospace", fontSize: 13, color: '#c9d1d9', lineHeight: 2, textAlign: 'center' }}>
             <div style={{ color: '#f48c06', fontWeight: 700 }}>┌─────────────────────────────────────────────┐</div>
-            <div style={{ color: '#f48c06', fontWeight: 700 }}>│   FlexNet Manager (Servidor Central/Cloud)  │</div>
+            <div style={{ color: '#f48c06', fontWeight: 700 }}>{t('│   FlexNet Manager (Servidor Central/Cloud)  │', '│   FlexNet Manager (Central Server/Cloud)    │')}</div>
             <div style={{ color: '#f48c06', fontWeight: 700 }}>└──────────────────────┬──────────────────────┘</div>
             <div style={{ color: '#555' }}>                       │ HTTPS</div>
             <div style={{ color: '#555' }}>                       ▼</div>
             <div style={{ color: '#26a269', fontWeight: 700 }}>┌──────────────────────────────────────────────┐</div>
-            <div style={{ color: '#26a269', fontWeight: 700 }}>│     Inventory Beacon (relay/intermediario)    │</div>
+            <div style={{ color: '#26a269', fontWeight: 700 }}>{t('│     Inventory Beacon (relay/intermediario)    │', '│     Inventory Beacon (relay/intermediary)     │')}</div>
             <div style={{ color: '#26a269', fontWeight: 700 }}>└───────┬──────────────┬───────────────┬────────┘</div>
             <div style={{ display: 'flex', justifyContent: 'center', gap: 40, marginTop: 8, flexWrap: 'wrap' }}>
               <div><div style={{ color: '#555' }}>│ HTTP/80</div><div style={{ color: '#555' }}>▼</div><div style={{ color: '#1a85ff' }}>[ Agent Win ]</div></div>
@@ -204,68 +270,125 @@
     /* ─── Section: Windows ─── */
 
     function WindowsContent() {
+      const { t } = useLang();
       const [sub, setSub] = useState('eng');
       return (
         <div>
-          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>Instalación en Windows</h2>
+          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>{t('Instalación en Windows', 'Windows Installation')}</h2>
           <SubTabs tabs={[{ id: 'eng', label: 'FlexNet Agent (Eng. Apps)' }, { id: 'inv', label: 'FlexNet Inventory Agent' }]} active={sub} onChange={setSub} />
           {sub === 'eng' ? (<div>
-            <InfoBox type="info">Versión más reciente: <strong>5.17</strong> (FNMEA 2025 R2). Requiere entorno de <strong>64 bits</strong> obligatorio.</InfoBox>
-            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Plataformas soportadas</h3>
-            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>Windows Server 2016, 2019, 2022 y Windows 10/11 (64-bit). No requiere Java — usa su propio runtime InstallAnywhere.</p>
-            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Instalación con Wizard (Interactiva)</h3>
-            <StepCard number={1} title="Descargar el instalador">Accede al <strong>Flexera Product and License Center</strong>. Descarga <code>FlexNet_Agent_5_7-All_Platforms.zip</code> (el nombre del ZIP es histórico, contiene la versión actual). Extrae el instalador .exe de Windows.</StepCard>
-            <StepCard number={2} title="Ejecutar el instalador">Doble clic en el .exe. Se lanza el wizard de InstallAnywhere. Se te pedirá la URL del servidor FlexNet Manager y las credenciales.</StepCard>
-            <StepCard number={3} title="Configurar conexión al servidor">Proporciona la URL del servidor FNMEA (ej. <code>https://fnmea-server.empresa.com</code>) y el puerto configurado.</StepCard>
-            <StepCard number={4} title="Verificar el servicio">En <code>services.msc</code>, verifica que el servicio "FlexNet Agent" está en ejecución.</StepCard>
-            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Instalación Silenciosa</h3>
-            <InfoBox type="warning">Debes abrir el CMD o PowerShell como <strong>Administrador</strong>. Windows requiere privilegios elevados explícitos.</InfoBox>
-            <CodeBlock title="Instalación silenciosa">{`:: Ejecutar como Administrador
+            <InfoBox type="info">
+              {t(<>Versión más reciente: <strong>5.17</strong> (FNMEA 2025 R2). Requiere entorno de <strong>64 bits</strong> obligatorio.</>,
+                 <>Latest version: <strong>5.17</strong> (FNMEA 2025 R2). A <strong>64-bit</strong> environment is required.</>)}
+            </InfoBox>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Plataformas soportadas', 'Supported platforms')}</h3>
+            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+              {t('Windows Server 2016, 2019, 2022 y Windows 10/11 (64-bit). No requiere Java — usa su propio runtime InstallAnywhere.',
+                 'Windows Server 2016, 2019, 2022 and Windows 10/11 (64-bit). Java is not required — it uses its own InstallAnywhere runtime.')}
+            </p>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Instalación con Wizard (Interactiva)', 'Wizard Installation (Interactive)')}</h3>
+            <StepCard number={1} title={t('Descargar el instalador', 'Download the installer')}>
+              {t(<>Accede al <strong>Flexera Product and License Center</strong>. Descarga <code>FlexNet_Agent_5_7-All_Platforms.zip</code> (el nombre del ZIP es histórico, contiene la versión actual). Extrae el instalador .exe de Windows.</>,
+                 <>Go to the <strong>Flexera Product and License Center</strong>. Download <code>FlexNet_Agent_5_7-All_Platforms.zip</code> (the ZIP name is historical; it contains the current version). Extract the Windows .exe installer.</>)}
+            </StepCard>
+            <StepCard number={2} title={t('Ejecutar el instalador', 'Run the installer')}>
+              {t('Doble clic en el .exe. Se lanza el wizard de InstallAnywhere. Se te pedirá la URL del servidor FlexNet Manager y las credenciales.',
+                 'Double-click the .exe. The InstallAnywhere wizard starts. You will be asked for the FlexNet Manager server URL and credentials.')}
+            </StepCard>
+            <StepCard number={3} title={t('Configurar conexión al servidor', 'Configure the server connection')}>
+              {t(<>Proporciona la URL del servidor FNMEA (ej. <code>https://fnmea-server.empresa.com</code>) y el puerto configurado.</>,
+                 <>Provide the FNMEA server URL (e.g. <code>https://fnmea-server.company.com</code>) and the configured port.</>)}
+            </StepCard>
+            <StepCard number={4} title={t('Verificar el servicio', 'Verify the service')}>
+              {t(<>En <code>services.msc</code>, verifica que el servicio "FlexNet Agent" está en ejecución.</>,
+                 <>In <code>services.msc</code>, check that the "FlexNet Agent" service is running.</>)}
+            </StepCard>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Instalación Silenciosa', 'Silent Installation')}</h3>
+            <InfoBox type="warning">
+              {t(<>Debes abrir el CMD o PowerShell como <strong>Administrador</strong>. Windows requiere privilegios elevados explícitos.</>,
+                 <>You must open CMD or PowerShell as <strong>Administrator</strong>. Windows requires explicitly elevated privileges.</>)}
+            </InfoBox>
+            <CodeBlock title={t('Instalación silenciosa', 'Silent installation')}>{t(`:: Ejecutar como Administrador
 FlexNetAgent-5.17-windows-x64.exe -i silent
 
 :: Con archivo de respuesta personalizado
-FlexNetAgent-5.17-windows-x64.exe -i silent -f agent_response.properties`}</CodeBlock>
-            <CodeBlock title="Ejemplo de archivo de respuesta">{`# Configuración del servidor
+FlexNetAgent-5.17-windows-x64.exe -i silent -f agent_response.properties`,
+`:: Run as Administrator
+FlexNetAgent-5.17-windows-x64.exe -i silent
+
+:: With a custom response file
+FlexNetAgent-5.17-windows-x64.exe -i silent -f agent_response.properties`)}</CodeBlock>
+            <CodeBlock title={t('Ejemplo de archivo de respuesta', 'Response file example')}>{t(`# Configuración del servidor
 FLEXNET_MANAGER_URL=https://fnmea-server.empresa.com
 FLEXNET_MANAGER_PORT=443
 AGENT_INSTALL_DIR=C:\\Program Files\\FlexNet Agent
-REPORT_INTERVAL=60`}</CodeBlock>
-            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Gestión del Servicio</h3>
-            <CodeBlock title="Comandos del servicio">{`sc query "FlexNet Agent"
+REPORT_INTERVAL=60`,
+`# Server configuration
+FLEXNET_MANAGER_URL=https://fnmea-server.company.com
+FLEXNET_MANAGER_PORT=443
+AGENT_INSTALL_DIR=C:\\Program Files\\FlexNet Agent
+REPORT_INTERVAL=60`)}</CodeBlock>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Gestión del Servicio', 'Service Management')}</h3>
+            <CodeBlock title={t('Comandos del servicio', 'Service commands')}>{t(`sc query "FlexNet Agent"
 net stop "FlexNet Agent"
 net start "FlexNet Agent"
 
 :: Desinstalar
-FlexNetAgent-5.17-windows-x64.exe -i silent -r`}</CodeBlock>
+FlexNetAgent-5.17-windows-x64.exe -i silent -r`,
+`sc query "FlexNet Agent"
+net stop "FlexNet Agent"
+net start "FlexNet Agent"
+
+:: Uninstall
+FlexNetAgent-5.17-windows-x64.exe -i silent -r`)}</CodeBlock>
           </div>) : (<div>
-            <InfoBox type="info">El FlexNet Inventory Agent se comunica con un <strong>Inventory Beacon</strong> intermedio para reportar al servidor central.</InfoBox>
-            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Métodos de despliegue</h3>
-            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}><strong>Adopción automática</strong> (el beacon descubre y despliega) o <strong>Despliegue con herramienta de terceros</strong> (SCCM, GPO, etc.).</p>
-            <StepCard number={1} title="Obtener el paquete MSI">Desde la consola web: <strong>Discovery &amp; Inventory → Settings → Inventory agent for download</strong>.</StepCard>
-            <StepCard number={2} title="Preparar el archivo bootstrap">Descarga y edita <code>mgssetup.ini</code> con la URL de tu beacon.</StepCard>
-            <CodeBlock title="Ejemplo mgssetup.ini">{`[ManageSoft]
+            <InfoBox type="info">
+              {t(<>El FlexNet Inventory Agent se comunica con un <strong>Inventory Beacon</strong> intermedio para reportar al servidor central.</>,
+                 <>The FlexNet Inventory Agent communicates with an intermediate <strong>Inventory Beacon</strong> to report to the central server.</>)}
+            </InfoBox>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Métodos de despliegue', 'Deployment methods')}</h3>
+            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+              {t(<><strong>Adopción automática</strong> (el beacon descubre y despliega) o <strong>Despliegue con herramienta de terceros</strong> (SCCM, GPO, etc.).</>,
+                 <><strong>Automatic adoption</strong> (the beacon discovers and deploys) or <strong>deployment with a third-party tool</strong> (SCCM, GPO, etc.).</>)}
+            </p>
+            <StepCard number={1} title={t('Obtener el paquete MSI', 'Get the MSI package')}>
+              {t(<>Desde la consola web: <strong>Discovery &amp; Inventory → Settings → Inventory agent for download</strong>.</>,
+                 <>From the web console: <strong>Discovery &amp; Inventory → Settings → Inventory agent for download</strong>.</>)}
+            </StepCard>
+            <StepCard number={2} title={t('Preparar el archivo bootstrap', 'Prepare the bootstrap file')}>
+              {t(<>Descarga y edita <code>mgssetup.ini</code> con la URL de tu beacon.</>,
+                 <>Download and edit <code>mgssetup.ini</code> with your beacon URL.</>)}
+            </StepCard>
+            <CodeBlock title={t('Ejemplo mgssetup.ini', 'mgssetup.ini example')}>{t(`[ManageSoft]
 MGSFT_BOOTSTRAP_DOWNLOAD=http://beacon.empresa.com/ManageSoftDL
 MGSFT_BOOTSTRAP_UPLOAD=http://beacon.empresa.com/ManageSoftRL
-MGSFT_RUNPOLICY=1`}</CodeBlock>
-            <StepCard number={3} title="Instalar con msiexec">Instalación silenciosa:</StepCard>
-            <CodeBlock title="Instalación silenciosa MSI">{`msiexec /i ManageSoft.msi /qn
+MGSFT_RUNPOLICY=1`,
+`[ManageSoft]
+MGSFT_BOOTSTRAP_DOWNLOAD=http://beacon.company.com/ManageSoftDL
+MGSFT_BOOTSTRAP_UPLOAD=http://beacon.company.com/ManageSoftRL
+MGSFT_RUNPOLICY=1`)}</CodeBlock>
+            <StepCard number={3} title={t('Instalar con msiexec', 'Install with msiexec')}>{t('Instalación silenciosa:', 'Silent installation:')}</StepCard>
+            <CodeBlock title={t('Instalación silenciosa MSI', 'MSI silent installation')}>{`msiexec /i ManageSoft.msi /qn
 msiexec /i ManageSoft.msi /qn /l*v C:\\temp\\flexnet_install.log
 msiexec /i ManageSoft.msi /qn INSTALLDIR="C:\\Program Files (x86)\\ManageSoft"`}</CodeBlock>
-            <StepCard number={4} title="Verificar">Instalación: <code>%ProgramFiles(x86)%\ManageSoft</code>. Logs: <code>%ProgramData%\ManageSoft\log</code>.</StepCard>
-            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Logs clave</h3>
+            <StepCard number={4} title={t('Verificar', 'Verify')}>
+              {t(<>Instalación: <code>%ProgramFiles(x86)%\ManageSoft</code>. Logs: <code>%ProgramData%\ManageSoft\log</code>.</>,
+                 <>Installation: <code>%ProgramFiles(x86)%\ManageSoft</code>. Logs: <code>%ProgramData%\ManageSoft\log</code>.</>)}
+            </StepCard>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Logs clave', 'Key logs')}</h3>
             <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
-              <thead><TRow header cells={['Archivo', 'Componente']} /></thead>
+              <thead><TRow header cells={[t('Archivo', 'File'), t('Componente', 'Component')]} /></thead>
               <tbody>
-                <TRow cells={['installation.log', 'Instalador (ndlaunch)']} />
-                <TRow cells={['policy.log', 'Descarga de políticas (mgspolicy)']} />
-                <TRow cells={['tracker.log', 'Inventario (ndtrack)']} />
-                <TRow cells={['schedule.log', 'Programador (ndschedag)']} />
-                <TRow cells={['uploader.log', 'Subida (ndupload)']} />
-                <TRow cells={['usageagent.log', 'Tracking de uso (mgsusageag)']} />
+                <TRow cells={['installation.log', t('Instalador (ndlaunch)', 'Installer (ndlaunch)')]} />
+                <TRow cells={['policy.log', t('Descarga de políticas (mgspolicy)', 'Policy download (mgspolicy)')]} />
+                <TRow cells={['tracker.log', t('Inventario (ndtrack)', 'Inventory (ndtrack)')]} />
+                <TRow cells={['schedule.log', t('Programador (ndschedag)', 'Scheduler (ndschedag)')]} />
+                <TRow cells={['uploader.log', t('Subida (ndupload)', 'Upload (ndupload)')]} />
+                <TRow cells={['usageagent.log', t('Tracking de uso (mgsusageag)', 'Usage tracking (mgsusageag)')]} />
               </tbody>
             </table></div>
-            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Desinstalación</h3>
-            <CodeBlock title="Desinstalar">{`msiexec /x ManageSoft.msi /qn
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Desinstalación', 'Uninstallation')}</h3>
+            <CodeBlock title={t('Desinstalar', 'Uninstall')}>{`msiexec /x ManageSoft.msi /qn
 msiexec /x {PRODUCT-CODE-GUID} /qn`}</CodeBlock>
           </div>)}
         </div>
@@ -275,38 +398,68 @@ msiexec /x {PRODUCT-CODE-GUID} /qn`}</CodeBlock>
     /* ─── Section: Linux ─── */
 
     function LinuxContent() {
+      const { t } = useLang();
       const [sub, setSub] = useState('eng');
       return (
         <div>
-          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>Instalación en Linux</h2>
+          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>{t('Instalación en Linux', 'Linux Installation')}</h2>
           <SubTabs tabs={[{ id: 'eng', label: 'FlexNet Agent (Eng. Apps)' }, { id: 'inv', label: 'FlexNet Inventory Agent' }]} active={sub} onChange={setSub} />
           {sub === 'eng' ? (<div>
-            <InfoBox type="info">En UNIX/Linux, el instalador ejecuta <strong>silenciosamente por defecto</strong>. Opcionalmente usa <code>-i gui</code> (requiere X11).</InfoBox>
-            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Plataformas soportadas</h3>
-            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>RHEL 7/8/9 · CentOS 7/8 · SUSE 12/15 · Ubuntu 18.04+ (64-bit). Desde 2025 R2: <strong>Linux ARM64 (Aarch64)</strong>.</p>
-            <StepCard number={1} title="Descargar y extraer">Descarga <code>FlexNet_Agent_5_7-All_Platforms.zip</code> y extrae el binario de Linux.</StepCard>
-            <CodeBlock title="Extraer">{`unzip FlexNet_Agent_5_7-All_Platforms.zip
-# Archivo: FlexNetAgent-5.17-linux-x64.bin`}</CodeBlock>
-            <StepCard number={2} title="Permisos"><code>chmod +x FlexNetAgent-5.17-linux-x64.bin</code></StepCard>
-            <StepCard number={3} title="Instalar">Ejecutar con sudo:</StepCard>
-            <CodeBlock title="Instalación">{`sudo ./FlexNetAgent-5.17-linux-x64.bin -i silent
+            <InfoBox type="info">
+              {t(<>En UNIX/Linux, el instalador ejecuta <strong>silenciosamente por defecto</strong>. Opcionalmente usa <code>-i gui</code> (requiere X11).</>,
+                 <>On UNIX/Linux, the installer runs <strong>silently by default</strong>. Optionally use <code>-i gui</code> (requires X11).</>)}
+            </InfoBox>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Plataformas soportadas', 'Supported platforms')}</h3>
+            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+              {t(<>RHEL 7/8/9 · CentOS 7/8 · SUSE 12/15 · Ubuntu 18.04+ (64-bit). Desde 2025 R2: <strong>Linux ARM64 (Aarch64)</strong>.</>,
+                 <>RHEL 7/8/9 · CentOS 7/8 · SUSE 12/15 · Ubuntu 18.04+ (64-bit). Since 2025 R2: <strong>Linux ARM64 (Aarch64)</strong>.</>)}
+            </p>
+            <StepCard number={1} title={t('Descargar y extraer', 'Download and extract')}>
+              {t(<>Descarga <code>FlexNet_Agent_5_7-All_Platforms.zip</code> y extrae el binario de Linux.</>,
+                 <>Download <code>FlexNet_Agent_5_7-All_Platforms.zip</code> and extract the Linux binary.</>)}
+            </StepCard>
+            <CodeBlock title={t('Extraer', 'Extract')}>{t(`unzip FlexNet_Agent_5_7-All_Platforms.zip
+# Archivo: FlexNetAgent-5.17-linux-x64.bin`,
+`unzip FlexNet_Agent_5_7-All_Platforms.zip
+# File: FlexNetAgent-5.17-linux-x64.bin`)}</CodeBlock>
+            <StepCard number={2} title={t('Permisos', 'Permissions')}><code>chmod +x FlexNetAgent-5.17-linux-x64.bin</code></StepCard>
+            <StepCard number={3} title={t('Instalar', 'Install')}>{t('Ejecutar con sudo:', 'Run with sudo:')}</StepCard>
+            <CodeBlock title={t('Instalación', 'Installation')}>{t(`sudo ./FlexNetAgent-5.17-linux-x64.bin -i silent
 sudo ./FlexNetAgent-5.17-linux-x64.bin -i silent -f /ruta/agent_response.properties
-sudo ./FlexNetAgent-5.17-linux-x64.bin -i gui  # Wizard gráfico (X11)`}</CodeBlock>
-            <StepCard number={4} title="Verificar">Comprobar el servicio:</StepCard>
-            <CodeBlock title="Verificar">{`systemctl status flexnetagent
+sudo ./FlexNetAgent-5.17-linux-x64.bin -i gui  # Wizard gráfico (X11)`,
+`sudo ./FlexNetAgent-5.17-linux-x64.bin -i silent
+sudo ./FlexNetAgent-5.17-linux-x64.bin -i silent -f /path/agent_response.properties
+sudo ./FlexNetAgent-5.17-linux-x64.bin -i gui  # Graphical wizard (X11)`)}</CodeBlock>
+            <StepCard number={4} title={t('Verificar', 'Verify')}>{t('Comprobar el servicio:', 'Check the service:')}</StepCard>
+            <CodeBlock title={t('Verificar', 'Verify')}>{`systemctl status flexnetagent
 tail -f /var/log/flexnetagent/*.log`}</CodeBlock>
-            <InfoBox type="tip">Desde 2025 R2, el agente soporta <strong>ARM64</strong> para entornos como AWS Graviton. Funcionalidad equivalente a x86_64.</InfoBox>
+            <InfoBox type="tip">
+              {t(<>Desde 2025 R2, el agente soporta <strong>ARM64</strong> para entornos como AWS Graviton. Funcionalidad equivalente a x86_64.</>,
+                 <>Since 2025 R2, the agent supports <strong>ARM64</strong> for environments such as AWS Graviton. Functionality is equivalent to x86_64.</>)}
+            </InfoBox>
           </div>) : (<div>
-            <InfoBox type="warning">Requiere <strong>root</strong>. Instala dos servicios: <code>ndschedag</code> (programador) y <code>mgsusageag</code> (tracking de uso).</InfoBox>
-            <StepCard number={1} title="Preparar bootstrap">Debe existir <strong>ANTES</strong> de instalar en <code>/var/tmp/mgsft_rollout_response</code>.</StepCard>
-            <CodeBlock title="/var/tmp/mgsft_rollout_response">{`MGSFT_BOOTSTRAP_DOWNLOAD=http://beacon.empresa.com/ManageSoftDL
+            <InfoBox type="warning">
+              {t(<>Requiere <strong>root</strong>. Instala dos servicios: <code>ndschedag</code> (programador) y <code>mgsusageag</code> (tracking de uso).</>,
+                 <>Requires <strong>root</strong>. Installs two services: <code>ndschedag</code> (scheduler) and <code>mgsusageag</code> (usage tracking).</>)}
+            </InfoBox>
+            <StepCard number={1} title={t('Preparar bootstrap', 'Prepare the bootstrap')}>
+              {t(<>Debe existir <strong>ANTES</strong> de instalar en <code>/var/tmp/mgsft_rollout_response</code>.</>,
+                 <>It must exist <strong>BEFORE</strong> installing, at <code>/var/tmp/mgsft_rollout_response</code>.</>)}
+            </StepCard>
+            <CodeBlock title="/var/tmp/mgsft_rollout_response">{t(`MGSFT_BOOTSTRAP_DOWNLOAD=http://beacon.empresa.com/ManageSoftDL
 MGSFT_BOOTSTRAP_UPLOAD=http://beacon.empresa.com/ManageSoftRL
-MGSFT_RUNPOLICY=1`}</CodeBlock>
-            <StepCard number={2} title="Instalar según distribución">Usa el sistema de paquetes nativo:</StepCard>
+MGSFT_RUNPOLICY=1`,
+`MGSFT_BOOTSTRAP_DOWNLOAD=http://beacon.company.com/ManageSoftDL
+MGSFT_BOOTSTRAP_UPLOAD=http://beacon.company.com/ManageSoftRL
+MGSFT_RUNPOLICY=1`)}</CodeBlock>
+            <StepCard number={2} title={t('Instalar según distribución', 'Install according to distribution')}>{t('Usa el sistema de paquetes nativo:', 'Use the native package manager:')}</StepCard>
             <CodeBlock title="RPM (RHEL, CentOS, SUSE)">{`sudo rpm -ivh managesoft-[VERSION].x86_64.rpm`}</CodeBlock>
             <CodeBlock title="DEB (Debian, Ubuntu)">{`sudo dpkg -i managesoft_[VERSION]_amd64.deb`}</CodeBlock>
-            <StepCard number={3} title="Verificar">Binarios: <code>/opt/managesoft/bin</code> · Datos: <code>/var/opt/managesoft</code></StepCard>
-            <CodeBlock title="Verificar servicios y logs">{`systemctl status ndschedag
+            <StepCard number={3} title={t('Verificar', 'Verify')}>
+              {t(<>Binarios: <code>/opt/managesoft/bin</code> · Datos: <code>/var/opt/managesoft</code></>,
+                 <>Binaries: <code>/opt/managesoft/bin</code> · Data: <code>/var/opt/managesoft</code></>)}
+            </StepCard>
+            <CodeBlock title={t('Verificar servicios y logs', 'Verify services and logs')}>{t(`systemctl status ndschedag
 systemctl status mgsusageag
 
 # En AIX:
@@ -314,9 +467,18 @@ startsrc -g managesoft
 stopsrc -g managesoft
 
 # Logs
-ls /var/opt/managesoft/log/`}</CodeBlock>
-            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Configuración post-instalación</h3>
-            <CodeBlock title="Aplicar config con mgsconfig">{`cat > /var/tmp/tempconfig.ini << 'EOF'
+ls /var/opt/managesoft/log/`,
+`systemctl status ndschedag
+systemctl status mgsusageag
+
+# On AIX:
+startsrc -g managesoft
+stopsrc -g managesoft
+
+# Logs
+ls /var/opt/managesoft/log/`)}</CodeBlock>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Configuración post-instalación', 'Post-installation configuration')}</h3>
+            <CodeBlock title={t('Aplicar config con mgsconfig', 'Apply config with mgsconfig')}>{`cat > /var/tmp/tempconfig.ini << 'EOF'
 [ManageSoft\\Usage Agent\\CurrentVersion]
 Disabled=False
 StartupDelay=600
@@ -324,7 +486,10 @@ Lowprofile=True
 EOF
 
 /opt/managesoft/bin/mgsconfig -i /var/tmp/tempconfig.ini`}</CodeBlock>
-            <InfoBox type="info">En Linux, si usas HTTPS para comunicación con el beacon, necesitarás configurar manualmente los certificados CA (a diferencia de Windows donde es automático).</InfoBox>
+            <InfoBox type="info">
+              {t('En Linux, si usas HTTPS para comunicación con el beacon, necesitarás configurar manualmente los certificados CA (a diferencia de Windows donde es automático).',
+                 'On Linux, if you use HTTPS to communicate with the beacon, you will need to configure the CA certificates manually (unlike Windows, where this is automatic).')}
+            </InfoBox>
           </div>)}
         </div>
       );
@@ -333,24 +498,40 @@ EOF
     /* ─── Section: macOS ─── */
 
     function MacContent() {
+      const { t } = useLang();
       return (
         <div>
-          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>Instalación en macOS</h2>
-          <InfoBox type="warning"><strong>GateKeeper:</strong> El paquete puede no estar firmado. Si es así, desactiva GateKeeper temporalmente. Desde macOS Catalina 10.15, solo se soportan agentes de <strong>64 bits</strong> (2019 R2+).</InfoBox>
-          <StepCard number={1} title="Preparar bootstrap">Ambos archivos deben estar en <code>/var/tmp/</code> antes de instalar: el <code>mgsft_rollout_response</code> y el .PKG.</StepCard>
-          <CodeBlock title="/var/tmp/mgsft_rollout_response">{`MGSFT_BOOTSTRAP_DOWNLOAD=http://beacon.empresa.com/ManageSoftDL
+          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>{t('Instalación en macOS', 'macOS Installation')}</h2>
+          <InfoBox type="warning">
+            {t(<><strong>GateKeeper:</strong> El paquete puede no estar firmado. Si es así, desactiva GateKeeper temporalmente. Desde macOS Catalina 10.15, solo se soportan agentes de <strong>64 bits</strong> (2019 R2+).</>,
+               <><strong>Gatekeeper:</strong> The package may not be signed. If so, temporarily disable Gatekeeper. Since macOS Catalina 10.15, only <strong>64-bit</strong> agents are supported (2019 R2+).</>)}
+          </InfoBox>
+          <StepCard number={1} title={t('Preparar bootstrap', 'Prepare the bootstrap')}>
+            {t(<>Ambos archivos deben estar en <code>/var/tmp/</code> antes de instalar: el <code>mgsft_rollout_response</code> y el .PKG.</>,
+               <>Both files must be in <code>/var/tmp/</code> before installing: <code>mgsft_rollout_response</code> and the .PKG.</>)}
+          </StepCard>
+          <CodeBlock title="/var/tmp/mgsft_rollout_response">{t(`MGSFT_BOOTSTRAP_DOWNLOAD=http://beacon.empresa.com/ManageSoftDL
 MGSFT_BOOTSTRAP_UPLOAD=http://beacon.empresa.com/ManageSoftRL
-MGSFT_RUNPOLICY=1`}</CodeBlock>
-          <StepCard number={2} title="(Opcional) Desactivar GateKeeper">Solo si el paquete no está firmado:</StepCard>
-          <CodeBlock title="GateKeeper">{`sudo spctl --master-disable   # Desactivar
+MGSFT_RUNPOLICY=1`,
+`MGSFT_BOOTSTRAP_DOWNLOAD=http://beacon.company.com/ManageSoftDL
+MGSFT_BOOTSTRAP_UPLOAD=http://beacon.company.com/ManageSoftRL
+MGSFT_RUNPOLICY=1`)}</CodeBlock>
+          <StepCard number={2} title={t('(Opcional) Desactivar GateKeeper', '(Optional) Disable Gatekeeper')}>{t('Solo si el paquete no está firmado:', 'Only if the package is not signed:')}</StepCard>
+          <CodeBlock title="Gatekeeper">{t(`sudo spctl --master-disable   # Desactivar
 spctl --status                # Verificar
-sudo spctl --master-enable    # Reactivar después de instalar`}</CodeBlock>
-          <StepCard number={3} title="Instalar .PKG">Desde Terminal con sudo:</StepCard>
-          <CodeBlock title="Instalar">{`sudo installer -pkg /var/tmp/ManageSoft-[VERSION].pkg -target /`}</CodeBlock>
-          <StepCard number={4} title="Verificar">Binarios: <code>/opt/managesoft/bin</code> · Logs: <code>/var/opt/managesoft/log</code></StepCard>
-          <CodeBlock title="Verificar">{`ls /opt/managesoft/bin/
+sudo spctl --master-enable    # Reactivar después de instalar`,
+`sudo spctl --master-disable   # Disable
+spctl --status                # Check
+sudo spctl --master-enable    # Re-enable after installing`)}</CodeBlock>
+          <StepCard number={3} title={t('Instalar .PKG', 'Install the .PKG')}>{t('Desde Terminal con sudo:', 'From Terminal with sudo:')}</StepCard>
+          <CodeBlock title={t('Instalar', 'Install')}>{`sudo installer -pkg /var/tmp/ManageSoft-[VERSION].pkg -target /`}</CodeBlock>
+          <StepCard number={4} title={t('Verificar', 'Verify')}>
+            {t(<>Binarios: <code>/opt/managesoft/bin</code> · Logs: <code>/var/opt/managesoft/log</code></>,
+               <>Binaries: <code>/opt/managesoft/bin</code> · Logs: <code>/var/opt/managesoft/log</code></>)}
+          </StepCard>
+          <CodeBlock title={t('Verificar', 'Verify')}>{`ls /opt/managesoft/bin/
 cat /var/opt/managesoft/log/policy.log`}</CodeBlock>
-          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Config post-instalación (igual que Linux)</h3>
+          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Config post-instalación (igual que Linux)', 'Post-installation config (same as Linux)')}</h3>
           <CodeBlock title="mgsconfig">{`cat > /var/tmp/tempconfig.ini << 'EOF'
 [ManageSoft\\Usage Agent\\CurrentVersion]
 Disabled=False
@@ -359,9 +540,15 @@ Lowprofile=True
 EOF
 
 /opt/managesoft/bin/mgsconfig -i /var/tmp/tempconfig.ini`}</CodeBlock>
-          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Despliegue con JAMF</h3>
-          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>Configura tu MDM para: 1) Entregar <code>mgsft_rollout_response</code> a <code>/var/tmp/</code>, 2) Instalar el .PKG, 3) Opcionalmente ejecutar script post-instalación con <code>mgsconfig</code>.</p>
-          <InfoBox type="warning"><strong>Problema conocido — Java:</strong> Puede aparecer un popup de Java obsoleto. Excluye <code>/System/Library/Frameworks/JavaVM.framework</code> del file scanning en Inventory Settings.</InfoBox>
+          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Despliegue con JAMF', 'Deployment with JAMF')}</h3>
+          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+            {t(<>Configura tu MDM para: 1) Entregar <code>mgsft_rollout_response</code> a <code>/var/tmp/</code>, 2) Instalar el .PKG, 3) Opcionalmente ejecutar script post-instalación con <code>mgsconfig</code>.</>,
+               <>Configure your MDM to: 1) Deliver <code>mgsft_rollout_response</code> to <code>/var/tmp/</code>, 2) Install the .PKG, 3) Optionally run a post-installation script with <code>mgsconfig</code>.</>)}
+          </p>
+          <InfoBox type="warning">
+            {t(<><strong>Problema conocido — Java:</strong> Puede aparecer un popup de Java obsoleto. Excluye <code>/System/Library/Frameworks/JavaVM.framework</code> del file scanning en Inventory Settings.</>,
+               <><strong>Known issue — Java:</strong> An outdated-Java popup may appear. Exclude <code>/System/Library/Frameworks/JavaVM.framework</code> from file scanning in Inventory Settings.</>)}
+          </InfoBox>
         </div>
       );
     }
@@ -369,69 +556,127 @@ EOF
     /* ─── Section: Containers ─── */
 
     function ContainersContent() {
+      const { t } = useLang();
       const [sub, setSub] = useState('k8s');
       return (
         <div>
-          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>Contenedores (Docker &amp; Kubernetes)</h2>
+          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>{t('Contenedores (Docker & Kubernetes)', 'Containers (Docker & Kubernetes)')}</h2>
           <SubTabs tabs={[{ id: 'k8s', label: 'Kubernetes Agent' }, { id: 'docker', label: 'Docker / Podman' }]} active={sub} onChange={setSub} />
           {sub === 'k8s' ? (<div>
-            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7, margin: '0 0 20px' }}>Flexera ofrece <strong>dos agentes</strong> para Kubernetes:</p>
+            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7, margin: '0 0 20px' }}>
+              {t(<>Flexera ofrece <strong>dos agentes</strong> para Kubernetes:</>, <>Flexera offers <strong>two agents</strong> for Kubernetes:</>)}
+            </p>
             <div className="cards-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, margin: '16px 0' }}>
               <div style={{ background: '#111827', border: '1px solid #1e2a3a', borderRadius: 12, padding: 20 }}>
                 <h4 style={{ color: '#f48c06', margin: '0 0 8px' }}>Flexera Kubernetes Inventory Agent</h4>
-                <p style={{ color: '#8892b0', fontSize: 13, lineHeight: 1.7, margin: '0 0 8px' }}>Agente completo. Inventario de recursos, software de imágenes, IBM License Service (opcional), metadatos cloud.</p>
-                <Badge color="#26a269">Recomendado</Badge>
+                <p style={{ color: '#8892b0', fontSize: 13, lineHeight: 1.7, margin: '0 0 8px' }}>
+                  {t('Agente completo. Inventario de recursos, software de imágenes, IBM License Service (opcional), metadatos cloud.',
+                     'Full-featured agent. Resource inventory, image software, IBM License Service (optional), cloud metadata.')}
+                </p>
+                <Badge color="#26a269">{t('Recomendado', 'Recommended')}</Badge>
               </div>
               <div style={{ background: '#111827', border: '1px solid #1e2a3a', borderRadius: 12, padding: 20 }}>
                 <h4 style={{ color: '#f48c06', margin: '0 0 8px' }}>Lightweight Kubernetes Agent</h4>
-                <p style={{ color: '#8892b0', fontSize: 13, lineHeight: 1.7, margin: '0 0 8px' }}>Para alta seguridad. Menor huella, más control manual. Contenedor inmutable por defecto.</p>
-                <Badge color="#1a85ff">Alta seguridad</Badge>
+                <p style={{ color: '#8892b0', fontSize: 13, lineHeight: 1.7, margin: '0 0 8px' }}>
+                  {t('Para alta seguridad. Menor huella, más control manual. Contenedor inmutable por defecto.',
+                     'For high-security environments. Smaller footprint, more manual control. Immutable container by default.')}
+                </p>
+                <Badge color="#1a85ff">{t('Alta seguridad', 'High security')}</Badge>
               </div>
             </div>
-            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>Arquitecturas: <strong>x86_64</strong>, <strong>ARM64/Aarch64</strong>, <strong>s390x</strong> (IBM System z). Solo <strong>un agente por clúster</strong>.</p>
-            <StepCard number={1} title="Descargar">En la consola web: <strong>Data Collection → Inventory Settings → Inventory agent for download</strong>.</StepCard>
-            <StepCard number={2} title="Cargar imagen en registro OCI">Subir al registro de contenedores de tu organización:</StepCard>
-            <CodeBlock title="Cargar imagen">{`tar xzf flexera-kubernetes-agent-[VERSION].tar.gz
+            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+              {t(<>Arquitecturas: <strong>x86_64</strong>, <strong>ARM64/Aarch64</strong>, <strong>s390x</strong> (IBM System z). Solo <strong>un agente por clúster</strong>.</>,
+                 <>Architectures: <strong>x86_64</strong>, <strong>ARM64/Aarch64</strong>, <strong>s390x</strong> (IBM System z). Only <strong>one agent per cluster</strong>.</>)}
+            </p>
+            <StepCard number={1} title={t('Descargar', 'Download')}>
+              {t(<>En la consola web: <strong>Data Collection → Inventory Settings → Inventory agent for download</strong>.</>,
+                 <>In the web console: <strong>Data Collection → Inventory Settings → Inventory agent for download</strong>.</>)}
+            </StepCard>
+            <StepCard number={2} title={t('Cargar imagen en registro OCI', 'Load the image into an OCI registry')}>
+              {t('Subir al registro de contenedores de tu organización:', 'Push it to your organization\'s container registry:')}
+            </StepCard>
+            <CodeBlock title={t('Cargar imagen', 'Load image')}>{t(`tar xzf flexera-kubernetes-agent-[VERSION].tar.gz
 docker load -i images/flexera-kia-[VERSION]-x86_64.tar
 docker tag flexera-kia:[VERSION] registro.empresa.com/flexera-kia:[VERSION]
-docker push registro.empresa.com/flexera-kia:[VERSION]`}</CodeBlock>
-            <StepCard number={3} title="Generar YAML de configuración">Script interactivo. Valores obligatorios: URL del beacon y URL del registro OCI.</StepCard>
-            <CodeBlock title="Generar YAML">{`./generate.sh
+docker push registro.empresa.com/flexera-kia:[VERSION]`,
+`tar xzf flexera-kubernetes-agent-[VERSION].tar.gz
+docker load -i images/flexera-kia-[VERSION]-x86_64.tar
+docker tag flexera-kia:[VERSION] registry.company.com/flexera-kia:[VERSION]
+docker push registry.company.com/flexera-kia:[VERSION]`)}</CodeBlock>
+            <StepCard number={3} title={t('Generar YAML de configuración', 'Generate the configuration YAML')}>
+              {t('Script interactivo. Valores obligatorios: URL del beacon y URL del registro OCI.',
+                 'Interactive script. Required values: beacon URL and OCI registry URL.')}
+            </StepCard>
+            <CodeBlock title={t('Generar YAML', 'Generate YAML')}>{t(`./generate.sh
 # Pregunta URL del beacon (obligatorio)
 # Pregunta URL del registro OCI (obligatorio)
-# Arquitectura, configuraciones avanzadas (opcional)`}</CodeBlock>
-            <StepCard number={4} title="Instalar en el clúster">Ejecutar el script de instalación:</StepCard>
-            <CodeBlock title="Instalar">{`./install.sh`}</CodeBlock>
-            <InfoBox type="danger">Solo <strong>una instancia</strong> del agente por clúster. Si ya existe uno, fusiona la configuración.</InfoBox>
+# Arquitectura, configuraciones avanzadas (opcional)`,
+`./generate.sh
+# Asks for the beacon URL (required)
+# Asks for the OCI registry URL (required)
+# Architecture, advanced settings (optional)`)}</CodeBlock>
+            <StepCard number={4} title={t('Instalar en el clúster', 'Install on the cluster')}>{t('Ejecutar el script de instalación:', 'Run the installation script:')}</StepCard>
+            <CodeBlock title={t('Instalar', 'Install')}>{`./install.sh`}</CodeBlock>
+            <InfoBox type="danger">
+              {t(<>Solo <strong>una instancia</strong> del agente por clúster. Si ya existe uno, fusiona la configuración.</>,
+                 <>Only <strong>one instance</strong> of the agent per cluster. If one already exists, merge the configuration.</>)}
+            </InfoBox>
           </div>) : (<div>
-            <InfoBox type="info">Desde la versión <strong>15.0.0</strong> (2020 R1), el agente incluye un <strong>Docker tracker</strong>. <strong>No habilitado por defecto.</strong> Soporte para <strong>Podman</strong> añadido posteriormente.</InfoBox>
-            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>El agente se instala en el <strong>HOST</strong>, no dentro del contenedor. Usa inventario "zero footprint":</p>
+            <InfoBox type="info">
+              {t(<>Desde la versión <strong>15.0.0</strong> (2020 R1), el agente incluye un <strong>Docker tracker</strong>. <strong>No habilitado por defecto.</strong> Soporte para <strong>Podman</strong> añadido posteriormente.</>,
+                 <>Since version <strong>15.0.0</strong> (2020 R1), the agent includes a <strong>Docker tracker</strong>. <strong>Not enabled by default.</strong> <strong>Podman</strong> support was added later.</>)}
+            </InfoBox>
+            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+              {t(<>El agente se instala en el <strong>HOST</strong>, no dentro del contenedor. Usa inventario "zero footprint":</>,
+                 <>The agent is installed on the <strong>HOST</strong>, not inside the container. It uses "zero footprint" inventory:</>)}
+            </p>
             <div style={{ background: '#0d1117', borderRadius: 12, padding: 20, border: '1px solid #1e2a3a', margin: '16px 0', fontFamily: "'SF Mono', Consolas, monospace", fontSize: 13, color: '#c9d1d9', lineHeight: 1.8 }}>
-              <div style={{ color: '#f48c06', fontWeight: 700 }}>Flujo "Zero Footprint":</div>
+              <div style={{ color: '#f48c06', fontWeight: 700 }}>{t('Flujo "Zero Footprint":', '"Zero Footprint" flow:')}</div>
               <div style={{ marginTop: 8 }}>
-                1. Docker tracker monitorea el Docker Engine<br/>
-                2. Detecta inicio de contenedor desde imagen<br/>
-                3. Carga ndtrack DENTRO del contenedor en ejecución<br/>
-                4. Ejecuta inventario · Reporta al host<br/>
-                5. Remueve ndtrack del contenedor (zero footprint)<br/>
-                6. Solo una vez por imagen (son inmutables)
+                {t(<>
+                  1. Docker tracker monitorea el Docker Engine<br/>
+                  2. Detecta inicio de contenedor desde imagen<br/>
+                  3. Carga ndtrack DENTRO del contenedor en ejecución<br/>
+                  4. Ejecuta inventario · Reporta al host<br/>
+                  5. Remueve ndtrack del contenedor (zero footprint)<br/>
+                  6. Solo una vez por imagen (son inmutables)
+                </>, <>
+                  1. The Docker tracker monitors the Docker Engine<br/>
+                  2. Detects a container starting from an image<br/>
+                  3. Loads ndtrack INSIDE the running container<br/>
+                  4. Runs the inventory · Reports to the host<br/>
+                  5. Removes ndtrack from the container (zero footprint)<br/>
+                  6. Only once per image (images are immutable)
+                </>)}
               </div>
             </div>
-            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Activar inventario Docker/Podman</h3>
-            <StepCard number={1} title="Habilitar desde la UI web">En <strong>Discovery &amp; Inventory → Settings → Container scanning</strong>:</StepCard>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Activar inventario Docker/Podman', 'Enable Docker/Podman inventory')}</h3>
+            <StepCard number={1} title={t('Habilitar desde la UI web', 'Enable from the web UI')}>
+              {t(<>En <strong>Discovery &amp; Inventory → Settings → Container scanning</strong>:</>,
+                 <>In <strong>Discovery &amp; Inventory → Settings → Container scanning</strong>:</>)}
+            </StepCard>
             <div style={{ background: '#111827', border: '1px solid #1e2a3a', borderRadius: 12, padding: 20, margin: '16px 0' }}>
-              {['Enable Docker inventory and running inventory agent inside Docker containers', 'Enable Podman inventory and running inventory agent inside Podman containers'].map((t, i) => (
+              {['Enable Docker inventory and running inventory agent inside Docker containers', 'Enable Podman inventory and running inventory agent inside Podman containers'].map((txt, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: i === 0 ? 12 : 0 }}>
                   <div style={{ width: 18, height: 18, border: '2px solid #f48c06', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <span style={{ color: '#f48c06', fontSize: 14, fontWeight: 700 }}>✓</span>
                   </div>
-                  <span style={{ color: '#e0e0e0', fontSize: 14 }}>{t}</span>
+                  <span style={{ color: '#e0e0e0', fontSize: 14 }}>{txt}</span>
                 </div>
               ))}
             </div>
-            <StepCard number={2} title="Esperar propagación">La política se propaga vía beacons. Puede tomar <strong>24-48 horas</strong> hasta que el inventario se procese.</StepCard>
-            <StepCard number={3} title="Verificar">En <strong>Discovery &amp; Inventory → Containers → All Containers</strong>.</StepCard>
-            <InfoBox type="tip">Como las imágenes Docker son inmutables, el agente solo inventaría una vez por imagen. El usage agent trackea inicio/parada/destrucción de contenedores.</InfoBox>
+            <StepCard number={2} title={t('Esperar propagación', 'Wait for propagation')}>
+              {t(<>La política se propaga vía beacons. Puede tomar <strong>24-48 horas</strong> hasta que el inventario se procese.</>,
+                 <>The policy propagates via beacons. It can take <strong>24-48 hours</strong> until the inventory is processed.</>)}
+            </StepCard>
+            <StepCard number={3} title={t('Verificar', 'Verify')}>
+              {t(<>En <strong>Discovery &amp; Inventory → Containers → All Containers</strong>.</>,
+                 <>In <strong>Discovery &amp; Inventory → Containers → All Containers</strong>.</>)}
+            </StepCard>
+            <InfoBox type="tip">
+              {t('Como las imágenes Docker son inmutables, el agente solo inventaría una vez por imagen. El usage agent trackea inicio/parada/destrucción de contenedores.',
+                 'Since Docker images are immutable, the agent only inventories each image once. The usage agent tracks container start/stop/destroy events.')}
+            </InfoBox>
           </div>)}
         </div>
       );
@@ -440,32 +685,48 @@ docker push registro.empresa.com/flexera-kia:[VERSION]`}</CodeBlock>
     /* ─── Section: Config ─── */
 
     function ConfigContent() {
+      const { t } = useLang();
       return (
         <div>
-          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>Configuración Avanzada</h2>
-          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 8 }}>Puertos y Comunicación</h3>
+          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>{t('Configuración Avanzada', 'Advanced Configuration')}</h2>
+          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 8 }}>{t('Puertos y Comunicación', 'Ports and Communication')}</h3>
           <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
-            <thead><TRow header cells={['Puerto', 'Protocolo', 'Uso']} /></thead>
+            <thead><TRow header cells={[t('Puerto', 'Port'), t('Protocolo', 'Protocol'), t('Uso', 'Usage')]} /></thead>
             <tbody>
-              <TRow cells={['80', 'HTTP', 'Comunicación por defecto agente ↔ Inventory Beacon']} />
-              <TRow cells={['443', 'HTTPS', 'Comunicación segura con beacon o servidor central']} />
-              <TRow cells={['27000-27009', 'TCP', 'Rango por defecto de FlexNet Publisher (lmgrd)']} />
+              <TRow cells={['80', 'HTTP', t('Comunicación por defecto agente ↔ Inventory Beacon', 'Default agent ↔ Inventory Beacon communication')]} />
+              <TRow cells={['443', 'HTTPS', t('Comunicación segura con beacon o servidor central', 'Secure communication with the beacon or central server')]} />
+              <TRow cells={['27000-27009', 'TCP', t('Rango por defecto de FlexNet Publisher (lmgrd)', 'Default FlexNet Publisher (lmgrd) range')]} />
             </tbody>
           </table></div>
-          <InfoBox type="info">Todos los puertos son configurables vía preferencias incluyendo el puerto en las URLs del beacon.</InfoBox>
+          <InfoBox type="info">
+            {t('Todos los puertos son configurables vía preferencias incluyendo el puerto en las URLs del beacon.',
+               'All ports are configurable via preferences, including the port in the beacon URLs.')}
+          </InfoBox>
           <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>config.ini (UNIX/macOS)</h3>
-          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>Archivo principal en <code>/var/opt/managesoft/etc/config.ini</code>. No editarlo directamente — usar <code>mgsconfig</code>:</p>
-          <CodeBlock title="Actualizar config parcialmente">{`cat > /var/tmp/patch.ini << 'EOF'
+          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+            {t(<>Archivo principal en <code>/var/opt/managesoft/etc/config.ini</code>. No editarlo directamente — usar <code>mgsconfig</code>:</>,
+               <>Main file at <code>/var/opt/managesoft/etc/config.ini</code>. Do not edit it directly — use <code>mgsconfig</code>:</>)}
+          </p>
+          <CodeBlock title={t('Actualizar config parcialmente', 'Partially update the config')}>{`cat > /var/tmp/patch.ini << 'EOF'
 [ManageSoft\\Launcher\\CurrentVersion]
 NetworkSense=False
 EOF
 
 /opt/managesoft/bin/mgsconfig -i /var/tmp/patch.ini`}</CodeBlock>
-          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Configuración en Windows</h3>
-          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>En Windows se almacena en el Registro. Se configura vía: parámetros MSI, transforms (.mst), bootstrap (mgssetup.ini), o políticas del beacon.</p>
-          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Auto-actualización</h3>
-          <InfoBox type="info">En <strong>Inventory Settings → Version to deploy</strong> defines la versión objetivo. Agentes controlados por política se actualizan automáticamente.</InfoBox>
-          <InfoBox type="warning"><strong>Limitación UNIX:</strong> Agentes instalados en modo "least privilege" en UNIX <strong>no pueden auto-actualizarse</strong>. Usa actualización manual o herramienta de terceros.</InfoBox>
+          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Configuración en Windows', 'Configuration on Windows')}</h3>
+          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+            {t('En Windows se almacena en el Registro. Se configura vía: parámetros MSI, transforms (.mst), bootstrap (mgssetup.ini), o políticas del beacon.',
+               'On Windows it is stored in the Registry. It is configured via: MSI parameters, transforms (.mst), bootstrap (mgssetup.ini), or beacon policies.')}
+          </p>
+          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Auto-actualización', 'Auto-update')}</h3>
+          <InfoBox type="info">
+            {t(<>En <strong>Inventory Settings → Version to deploy</strong> defines la versión objetivo. Agentes controlados por política se actualizan automáticamente.</>,
+               <>In <strong>Inventory Settings → Version to deploy</strong> you define the target version. Policy-managed agents update automatically.</>)}
+          </InfoBox>
+          <InfoBox type="warning">
+            {t(<><strong>Limitación UNIX:</strong> Agentes instalados en modo "least privilege" en UNIX <strong>no pueden auto-actualizarse</strong>. Usa actualización manual o herramienta de terceros.</>,
+               <><strong>UNIX limitation:</strong> Agents installed in "least privilege" mode on UNIX <strong>cannot auto-update</strong>. Use a manual update or a third-party tool.</>)}
+          </InfoBox>
         </div>
       );
     }
@@ -473,18 +734,33 @@ EOF
     /* ─── Section: Troubleshooting ─── */
 
     function TroubleshootingContent() {
+      const { t } = useLang();
       const faqs = [
-        { q: 'El agente no se comunica con el Inventory Beacon', a: 'Verifica conectividad (telnet/curl al puerto 80/443). Comprueba URLs en mgsft_rollout_response (UNIX) o mgssetup.ini (Windows). Revisa policy.log y uploader.log. Verifica firewall/proxy.' },
-        { q: 'Instalación silenciosa en Windows falla', a: 'Asegúrate de ejecutar como Administrador real (cmd elevado). Verifica sintaxis de msiexec (sin espacios extra después de /v"). Revisa log con /l*v.' },
-        { q: 'Popup de Java en macOS', a: 'Problema conocido con Java viejo en /System/Library/Frameworks/JavaVM.framework. Excluir directorio del file scanning en Inventory Settings.' },
-        { q: 'Servicios no inician en Linux', a: 'Verifica que mgsft_rollout_response existía en /var/tmp/ ANTES de instalar. Revisa /var/opt/managesoft/log/installation.log. Verificar instalación con sudo/root.' },
-        { q: 'Inventario Docker no aparece', a: 'Verificar "Enable Docker inventory" en Inventory Settings → Container scanning. Esperar 24-48h. El agente debe estar en el HOST, no dentro del contenedor.' },
-        { q: 'Kubernetes Agent no reporta', a: 'Verificar pod corriendo (kubectl get pods). Comprobar URL del beacon en YAML. Revisar logs del pod. Solo una instancia por clúster.' },
-        { q: 'Problemas HTTPS en UNIX/macOS', a: 'UNIX requiere configuración manual de certificados CA (Windows lo hace automáticamente). Si no puedes resolverlo, usa HTTP para bootstrap.' },
+        { q: t('El agente no se comunica con el Inventory Beacon', 'The agent does not communicate with the Inventory Beacon'),
+          a: t('Verifica conectividad (telnet/curl al puerto 80/443). Comprueba URLs en mgsft_rollout_response (UNIX) o mgssetup.ini (Windows). Revisa policy.log y uploader.log. Verifica firewall/proxy.',
+               'Check connectivity (telnet/curl to port 80/443). Verify the URLs in mgsft_rollout_response (UNIX) or mgssetup.ini (Windows). Review policy.log and uploader.log. Check the firewall/proxy.') },
+        { q: t('Instalación silenciosa en Windows falla', 'Silent installation on Windows fails'),
+          a: t('Asegúrate de ejecutar como Administrador real (cmd elevado). Verifica sintaxis de msiexec (sin espacios extra después de /v"). Revisa log con /l*v.',
+               'Make sure you run as a real Administrator (elevated cmd). Check the msiexec syntax (no extra spaces after /v"). Review the log with /l*v.') },
+        { q: t('Popup de Java en macOS', 'Java popup on macOS'),
+          a: t('Problema conocido con Java viejo en /System/Library/Frameworks/JavaVM.framework. Excluir directorio del file scanning en Inventory Settings.',
+               'Known issue with old Java in /System/Library/Frameworks/JavaVM.framework. Exclude the directory from file scanning in Inventory Settings.') },
+        { q: t('Servicios no inician en Linux', 'Services do not start on Linux'),
+          a: t('Verifica que mgsft_rollout_response existía en /var/tmp/ ANTES de instalar. Revisa /var/opt/managesoft/log/installation.log. Verificar instalación con sudo/root.',
+               'Verify that mgsft_rollout_response existed in /var/tmp/ BEFORE installing. Review /var/opt/managesoft/log/installation.log. Verify the installation was done with sudo/root.') },
+        { q: t('Inventario Docker no aparece', 'Docker inventory does not appear'),
+          a: t('Verificar "Enable Docker inventory" en Inventory Settings → Container scanning. Esperar 24-48h. El agente debe estar en el HOST, no dentro del contenedor.',
+               'Check "Enable Docker inventory" in Inventory Settings → Container scanning. Wait 24-48h. The agent must be on the HOST, not inside the container.') },
+        { q: t('Kubernetes Agent no reporta', 'Kubernetes Agent does not report'),
+          a: t('Verificar pod corriendo (kubectl get pods). Comprobar URL del beacon en YAML. Revisar logs del pod. Solo una instancia por clúster.',
+               'Check that the pod is running (kubectl get pods). Verify the beacon URL in the YAML. Review the pod logs. Only one instance per cluster.') },
+        { q: t('Problemas HTTPS en UNIX/macOS', 'HTTPS issues on UNIX/macOS'),
+          a: t('UNIX requiere configuración manual de certificados CA (Windows lo hace automáticamente). Si no puedes resolverlo, usa HTTP para bootstrap.',
+               'UNIX requires manual CA certificate configuration (Windows does it automatically). If you cannot resolve it, use HTTP for the bootstrap.') },
       ];
       return (
         <div>
-          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>Solución de Problemas</h2>
+          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 16px', fontWeight: 800 }}>{t('Solución de Problemas', 'Troubleshooting')}</h2>
           {faqs.map((f, i) => (
             <details key={i} style={{ margin: '8px 0', border: '1px solid #1e2a3a', borderRadius: 8, overflow: 'hidden' }}>
               <summary style={{ padding: '14px 18px', cursor: 'pointer', background: '#111827', color: '#e0e0e0', fontWeight: 600, fontSize: 14 }}>
@@ -493,40 +769,43 @@ EOF
               <div style={{ padding: '14px 18px', background: '#0d1117', color: '#8892b0', fontSize: 14, lineHeight: 1.7, borderTop: '1px solid #1e2a3a' }}>{f.a}</div>
             </details>
           ))}
-          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 32 }}>Ubicaciones de logs</h3>
+          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 32 }}>{t('Ubicaciones de logs', 'Log locations')}</h3>
           <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
-            <thead><TRow header cells={['Plataforma', 'Ubicación']} /></thead>
+            <thead><TRow header cells={[t('Plataforma', 'Platform'), t('Ubicación', 'Location')]} /></thead>
             <tbody>
               <TRow cells={['Windows', '%ProgramData%\\ManageSoft\\log\\']} />
               <TRow cells={['Linux / macOS', '/var/opt/managesoft/log/']} />
-              <TRow cells={['Linux (zero-touch, root)', '/var/tmp/flexera/log/']} />
+              <TRow cells={[t('Linux (zero-touch, root)', 'Linux (zero-touch, root)'), '/var/tmp/flexera/log/']} />
               <TRow cells={['Kubernetes Agent', 'kubectl logs <pod-name>']} />
             </tbody>
           </table></div>
-          <InfoBox type="info">Monitorea versiones de agentes en la consola web: <strong>Discovery &amp; Inventory → FlexNet Inventory Agent Status</strong>.</InfoBox>
-          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>Documentación Oficial</h3>
+          <InfoBox type="info">
+            {t(<>Monitorea versiones de agentes en la consola web: <strong>Discovery &amp; Inventory → FlexNet Inventory Agent Status</strong>.</>,
+               <>Monitor agent versions in the web console: <strong>Discovery &amp; Inventory → FlexNet Inventory Agent Status</strong>.</>)}
+          </InfoBox>
+          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Documentación Oficial', 'Official Documentation')}</h3>
           <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 2 }}>
-            • <strong>docs.flexera.com</strong> — Documentación oficial de todos los productos Flexera<br/>
-            • <strong>community.flexera.com</strong> — Foros y Knowledge Base<br/>
-            • FlexNet Agent Installation Guide — docs.flexera.com/fnmea/<br/>
-            • FlexNet Inventory Agent &amp; Managed Devices — PDF en la documentación de FNMS
+            {t(<>
+              • <strong>docs.flexera.com</strong> — Documentación oficial de todos los productos Flexera<br/>
+              • <strong>community.flexera.com</strong> — Foros y Knowledge Base<br/>
+              • FlexNet Agent Installation Guide — docs.flexera.com/fnmea/<br/>
+              • FlexNet Inventory Agent &amp; Managed Devices — PDF en la documentación de FNMS
+            </>, <>
+              • <strong>docs.flexera.com</strong> — Official documentation for all Flexera products<br/>
+              • <strong>community.flexera.com</strong> — Forums and Knowledge Base<br/>
+              • FlexNet Agent Installation Guide — docs.flexera.com/fnmea/<br/>
+              • FlexNet Inventory Agent &amp; Managed Devices — PDF in the FNMS documentation
+            </>)}
           </p>
-          <InfoBox type="danger">Guía basada en documentación pública de Flexera. Las versiones y comportamientos pueden cambiar. <strong>Consulta siempre la documentación oficial de tu versión específica.</strong></InfoBox>
+          <InfoBox type="danger">
+            {t(<>Guía basada en documentación pública de Flexera. Las versiones y comportamientos pueden cambiar. <strong>Consulta siempre la documentación oficial de tu versión específica.</strong></>,
+               <>Guide based on Flexera's public documentation. Versions and behavior may change. <strong>Always consult the official documentation for your specific version.</strong></>)}
+          </InfoBox>
         </div>
       );
     }
 
     /* ─── Main App ─── */
-
-    const SECTIONS = [
-      { id: 'overview', title: 'Visión General', icon: '📋' },
-      { id: 'windows',  title: 'Windows',        icon: '🪟' },
-      { id: 'linux',    title: 'Linux',           icon: '🐧' },
-      { id: 'mac',      title: 'macOS',           icon: '🍎' },
-      { id: 'containers', title: 'Contenedores',  icon: '📦' },
-      { id: 'config',   title: 'Configuración',   icon: '⚙️' },
-      { id: 'troubleshooting', title: 'Problemas', icon: '🔧' },
-    ];
 
     const CONTENT = {
       overview: OverviewContent,
@@ -539,51 +818,83 @@ EOF
     };
 
     function App() {
+      const [lang, setLangState] = useState(detectLang);
       const [active, setActive] = useState('overview');
+
+      const setLang = useCallback((l) => {
+        setLangState(l);
+        try { window.localStorage.setItem('flexera-guide-lang', l); } catch (e) {}
+      }, []);
+      const t = useCallback((es, en) => (lang === 'es' ? es : en), [lang]);
+
+      useEffect(() => {
+        document.documentElement.lang = lang;
+        document.title = META[lang].title;
+        const m = document.querySelector('meta[name="description"]');
+        if (m) m.setAttribute('content', META[lang].description);
+      }, [lang]);
+
+      const SECTIONS = [
+        { id: 'overview', title: t('Visión General', 'Overview'), icon: '📋' },
+        { id: 'windows',  title: 'Windows',                        icon: '🪟' },
+        { id: 'linux',    title: 'Linux',                          icon: '🐧' },
+        { id: 'mac',      title: 'macOS',                          icon: '🍎' },
+        { id: 'containers', title: t('Contenedores', 'Containers'), icon: '📦' },
+        { id: 'config',   title: t('Configuración', 'Configuration'), icon: '⚙️' },
+        { id: 'troubleshooting', title: t('Problemas', 'Troubleshooting'), icon: '🔧' },
+      ];
       const Content = CONTENT[active];
+
       return (
-        <div style={{ minHeight: '100vh', background: '#0a0e1a', color: '#e0e0e0', fontFamily: "'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif" }}>
-          {/* Header */}
-          <div style={{ background: 'linear-gradient(135deg, #0d1117 0%, #1a1428 50%, #0d1117 100%)', borderBottom: '1px solid #1e2a3a', padding: '24px 0' }}>
-            <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-              <div style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #e85d04, #f48c06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>🛡️</div>
-              <div>
-                <h1 className="header-title" style={{ margin: 0, fontSize: 24, fontWeight: 800, color: '#f0f0f0', letterSpacing: -0.5 }}>
-                  FlexNet Agents <span style={{ color: '#f48c06' }}>— Guía Completa</span>
-                </h1>
-                <p style={{ margin: '4px 0 0', fontSize: 13, color: '#6e7b91' }}>Flexera · Instalación · Configuración · Windows · Linux · macOS · Contenedores</p>
+        <LangContext.Provider value={{ lang, setLang, t }}>
+          <div style={{ minHeight: '100vh', background: '#0a0e1a', color: '#e0e0e0', fontFamily: "'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif" }}>
+            {/* Header */}
+            <div style={{ background: 'linear-gradient(135deg, #0d1117 0%, #1a1428 50%, #0d1117 100%)', borderBottom: '1px solid #1e2a3a', padding: '24px 0' }}>
+              <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #e85d04, #f48c06)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, flexShrink: 0 }}>🛡️</div>
+                <div>
+                  <h1 className="header-title" style={{ margin: 0, fontSize: 24, fontWeight: 800, color: '#f0f0f0', letterSpacing: -0.5 }}>
+                    FlexNet Agents <span style={{ color: '#f48c06' }}>{t('— Guía Completa', '— Complete Guide')}</span>
+                  </h1>
+                  <p style={{ margin: '4px 0 0', fontSize: 13, color: '#6e7b91' }}>
+                    {t('Flexera · Instalación · Configuración · Windows · Linux · macOS · Contenedores',
+                       'Flexera · Installation · Configuration · Windows · Linux · macOS · Containers')}
+                  </p>
+                </div>
+                <LangSwitch />
               </div>
             </div>
-          </div>
 
-          {/* Layout */}
-          <div className="layout" style={{ maxWidth: 1100, margin: '0 auto', padding: 24, display: 'flex', gap: 24, alignItems: 'flex-start' }}>
-            {/* Sidebar */}
-            <nav className="sidebar" style={{ minWidth: 210, position: 'sticky', top: 24, flexShrink: 0 }}>
-              <div className="sidebar-inner" style={{ background: '#111827', border: '1px solid #1e2a3a', borderRadius: 12, padding: 8 }}>
-                {SECTIONS.map(s => (
-                  <button key={s.id} onClick={() => { setActive(s.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                    style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '11px 14px', border: 'none', borderRadius: 8, background: active === s.id ? '#f48c0618' : 'transparent', color: active === s.id ? '#f48c06' : '#8892b0', cursor: 'pointer', fontSize: 14, fontWeight: active === s.id ? 700 : 500, textAlign: 'left', transition: 'all 0.15s', borderLeft: active === s.id ? '3px solid #f48c06' : '3px solid transparent' }}>
-                    <span className="icon" style={{ fontSize: 18 }}>{s.icon}</span>{s.title}
-                  </button>
-                ))}
-              </div>
-              <div className="sources-box" style={{ marginTop: 16, padding: 14, background: '#111827', border: '1px solid #1e2a3a', borderRadius: 12, fontSize: 11, color: '#555c70', lineHeight: 1.6 }}>
-                <strong style={{ color: '#6e7b91' }}>Fuentes:</strong><br/>docs.flexera.com<br/>community.flexera.com<br/>Docs FNMEA 2025 R1/R2<br/>FNMS 2025 R1 docs
-              </div>
-            </nav>
+            {/* Layout */}
+            <div className="layout" style={{ maxWidth: 1100, margin: '0 auto', padding: 24, display: 'flex', gap: 24, alignItems: 'flex-start' }}>
+              {/* Sidebar */}
+              <nav className="sidebar" style={{ minWidth: 210, position: 'sticky', top: 24, flexShrink: 0 }}>
+                <div className="sidebar-inner" style={{ background: '#111827', border: '1px solid #1e2a3a', borderRadius: 12, padding: 8 }}>
+                  {SECTIONS.map(s => (
+                    <button key={s.id} onClick={() => { setActive(s.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                      style={{ display: 'flex', alignItems: 'center', gap: 10, width: '100%', padding: '11px 14px', border: 'none', borderRadius: 8, background: active === s.id ? '#f48c0618' : 'transparent', color: active === s.id ? '#f48c06' : '#8892b0', cursor: 'pointer', fontSize: 14, fontWeight: active === s.id ? 700 : 500, textAlign: 'left', transition: 'all 0.15s', borderLeft: active === s.id ? '3px solid #f48c06' : '3px solid transparent' }}>
+                      <span className="icon" style={{ fontSize: 18 }}>{s.icon}</span>{s.title}
+                    </button>
+                  ))}
+                </div>
+                <div className="sources-box" style={{ marginTop: 16, padding: 14, background: '#111827', border: '1px solid #1e2a3a', borderRadius: 12, fontSize: 11, color: '#555c70', lineHeight: 1.6 }}>
+                  <strong style={{ color: '#6e7b91' }}>{t('Fuentes:', 'Sources:')}</strong><br/>docs.flexera.com<br/>community.flexera.com<br/>Docs FNMEA 2025 R1/R2<br/>FNMS 2025 R1 docs
+                </div>
+              </nav>
 
-            {/* Content */}
-            <main className="main-content" style={{ flex: 1, minWidth: 0, background: '#111827', border: '1px solid #1e2a3a', borderRadius: 12, padding: '28px 32px' }}>
-              <Content />
-            </main>
-          </div>
+              {/* Content */}
+              <main className="main-content" style={{ flex: 1, minWidth: 0, background: '#111827', border: '1px solid #1e2a3a', borderRadius: 12, padding: '28px 32px' }}>
+                <Content />
+              </main>
+            </div>
 
-          {/* Footer */}
-          <div style={{ borderTop: '1px solid #1e2a3a', padding: '20px 24px', textAlign: 'center', fontSize: 12, color: '#3d4555', marginTop: 40 }}>
-            Guía basada en documentación pública de Flexera (docs.flexera.com). No es documentación oficial. Consulta siempre la documentación de tu versión específica.
+            {/* Footer */}
+            <div style={{ borderTop: '1px solid #1e2a3a', padding: '20px 24px', textAlign: 'center', fontSize: 12, color: '#3d4555', marginTop: 40 }}>
+              {t('Guía basada en documentación pública de Flexera (docs.flexera.com). No es documentación oficial. Consulta siempre la documentación de tu versión específica.',
+                 'Guide based on Flexera\'s public documentation (docs.flexera.com). It is not official documentation. Always consult the documentation for your specific version.')}
+            </div>
           </div>
-        </div>
+        </LangContext.Provider>
       );
     }
 
