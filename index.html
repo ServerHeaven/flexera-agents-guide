@@ -16,6 +16,7 @@
     code { font-family: 'SF Mono', 'Cascadia Code', 'JetBrains Mono', 'Fira Code', Consolas, monospace; background: #1a2332; padding: 1px 6px; border-radius: 4px; font-size: 0.9em; color: #f48c06; }
     pre code { background: none; padding: 0; }
     details summary::-webkit-details-marker { display: none; }
+    .doc-link:hover { text-decoration: underline !important; }
     details[open] summary span.arrow { transform: rotate(90deg); display: inline-block; }
     ::selection { background: #f48c0644; color: #fff; }
     ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -169,6 +170,83 @@
       );
     }
 
+    /* ─── Official Flexera documentation links (all URLs verified against docs.flexera.com) ─── */
+
+    const GATHER = 'https://docs.flexera.com/fnms/EN/GatherFNInv/SysRef/FlexNetInventoryAgent';
+    const K8S = 'https://docs.flexera.com/fnms/EN/GatherFNInv/SysRef/KubernetesAgents';
+    const DOC = {
+      home:           'https://docs.flexera.com/',
+      community:      'https://community.flexera.com/',
+      plc:            'https://flexerasoftware.flexnetoperations.com',
+      fiaSysReqs:     GATHER + '/topics/FIA-SystemReqs.html',
+      coDepSysReqs:   GATHER + '/topics/CoDep-SystemReqs.html',
+      zfaSysReqs:     'https://docs.flexera.com/FlexNetManagerSuite2022R2/EN/GatherFNInv/SysRef/FlexNetInventoryAgent/topics/ZFA-SystemReqs.html',
+      fisSysReqs:     'https://docs.flexera.com/FlexNetManagerSuite2022R2/EN/GatherFNInv/SysRef/FlexNetInventoryAgent/topics/FIS-SystemReqs.html',
+      fa3Impl:        'https://docs.flexera.com/FlexNetManagerSuite2025R1/EN/GatherFNInv/SysRef/FlexNetInventoryAgent/topics/FA3-ImplemIntro.html',
+      fa3CustomUnix:  'https://docs.flexera.com/FlexNetManagerSuite2024R1/EN/GatherFNInv/SysRef/FlexNetInventoryAgent/topics/FA3-CustomForUNIX.html',
+      fa3InstallUnix: GATHER + '/tasks/FA3-InstallUNIX.html',
+      fa3SetupIni:    GATHER + '/tasks/FA3-CustomSetupIni.html',
+      fa3Sample:      'https://docs.flexera.com/fnms/EN/GatherFNInv/index.html#SysRef/FlexNetInventoryAgent/topics/FA3-SampleBootstrap.html',
+      fiaTrouble:     GATHER + '/tasks/FIA-Troubleshooting.html',
+      fa3Trouble:     'https://docs.flexera.com/FlexNetManagerSuite2024R1/EN/GatherFNInv/SysRef/FlexNetInventoryAgent/tasks/FA3-Troubleshooting.html',
+      fisTrouble:     GATHER + '/tasks/FIS-Troubleshooting.html',
+      zfaTrouble:     'https://docs.flexera.com/FlexNetManagerSuite2024R2/EN/GatherFNInv/SysRef/FlexNetInventoryAgent/tasks/ZFA-Troubleshooting.html',
+      logFile:        GATHER + '/topics/PMD-LogFile.html',
+      commandLines:   GATHER + '/topics/CommandLinesIntro.html',
+      flxconfig:      GATHER + '/reference/flxconfig-CommandLine.html',
+      flxconfigNews:  'https://docs.flexera.com/flexeraone/EN/WhatsNew/FeatureList/RN-new-flxconfig.htm',
+      httpProxy:      GATHER + '/topics/PMD-HTTP_Proxy.html',
+      httpsProxy:     'https://docs.flexera.com/fnms/EN/GatherFNInv/index.html#SysRef/FlexNetInventoryAgent/topics/PMD-HTTPS_Proxy.html',
+      noProxy:        'https://docs.flexera.com/FlexNetManagerSuite2024R1/EN/GatherFNInv/SysRef/FlexNetInventoryAgent/topics/PMD-NoProxy.html',
+      noProxyKnown:   'https://community.flexera.com/t5/FlexNet-Manager-Suite-Known/Known-Issue-no-proxy-preference-setting-is-ignored-by-FlexNet/ta-p/219275',
+      beaconProxy:    'https://docs.flexera.com/fnms/EN/WebHelp/tasks/FIB-Proxies.html',
+      versionSpec:    'https://docs.flexera.com/FlexNetManagerSuite2025R1/EN/WebHelp/tasks/FIA-VersionSpec.html',
+      changelog:      'https://docs.flexera.com/flexera/EN/Beacons/AgentChangeLog.htm',
+      networkReqs:    'https://docs.flexera.com/fnms/EN/SysReq/FNMS_sys_req/RN_sys_req_network.html',
+      portsKb:        'https://community.flexera.com/t5/FlexNet-Manager-Knowledge-Base/Ports-Required-by-the-FlexNet-Manager-Suite-Core-Compliance/ta-p/5805',
+      logsKb:         'https://community.flexera.com/s/article/flexnet-manager-suite-log-files-and-locations',
+      fnmeaAgent:     'https://docs.flexera.com/fnmea/AgentInstallationGuide/Content/helplibrary/Introduction_and_Overview.htm',
+      fnmeaWizard:    'https://docs.flexera.com/fnmea/2020r1/AgentInstallationGuide/Content/helplibrary/Installing_Using_the_InstallAnywhere_Installation_Wizard_on_Microsoft_Windo.htm',
+      fnmeaInstall:   'https://docs.flexera.com/fnmea/InstallationGuide/Content/helplibrary/_Installation_Guide_.htm',
+      fnmeaConcept:   'https://docs.flexera.com/fnmea/ConceptGuide/Content/helplibrary/fnmc_02_overview.htm',
+      k8sTwo:         K8S + '/topics/TwoKAgentsIntro.html',
+      k8sDownload:    'https://docs.flexera.com/fnms/EN/WebHelp/tasks/InvSet-KubAgentDownload.html',
+      k8sExamples:    'https://docs.flexera.com/fnms/EN/WebHelp/topics/InvSet-KRMExamples.html',
+      k8sFeatures:    'https://docs.flexera.com/fnms/EN/WebHelp/topics/InvSet-KubAgentFeatures.html',
+      k8sPermissions: 'https://docs.flexera.com/FlexNetManagerSuite2025R2/EN/GatherFNInv/SysRef/KubernetesAgents/topics/PermissionsOverview.html',
+      lwkDownload:    K8S + '/tasks/lwk-Download.html',
+      lwkScripted:    K8S + '/tasks/lwk-ScriptedInstall.html',
+      lwkManual:      K8S + '/tasks/lwk-ManualInstall.html',
+      lwkHelm:        K8S + '/topics/lwk-ValuesConfigOptions.html',
+      helmNews:       'https://docs.flexera.com/flexeraone/EN/WhatsNew/FeatureList/RN-new-HelmCharts.htm',
+      krmChart:       'https://gallery.ecr.aws/flexera/krm-chart',
+      lwkChart:       'https://gallery.ecr.aws/flexera/lwk-chart',
+      k8sUninstall:   'https://docs.flexera.com/flexera/EN/ITAssets/InvSet-Uninstall.htm',
+      installersNews: 'https://docs.flexera.com/flexeraone/EN/WhatsNew/FeatureList/2024FEB-ITV-Kubernetes-Agent-FLEX-1007.htm',
+      containerMon:   'https://docs.flexera.com/flexera/EN/ITAssets/flexera-container-monitor.htm',
+    };
+
+    function Ext({ href, children }) {
+      return <a className="doc-link" href={href} target="_blank" rel="noopener noreferrer" style={{ color: '#1a85ff', textDecoration: 'none' }}>{children} ↗</a>;
+    }
+
+    function DocLinks({ links }) {
+      const { t } = useLang();
+      return (
+        <div style={{ margin: '28px 0 8px', padding: '14px 18px', borderRadius: 8, background: '#0d1117', border: '1px solid #1e2a3a' }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#f48c06', marginBottom: 8 }}>📖 {t('Documentación oficial de Flexera', 'Official Flexera documentation')}</div>
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {links.map((l, i) => (
+              <li key={i} style={{ fontSize: 13, lineHeight: 1.6 }}>
+                <Ext href={l.url}>{l.label}</Ext>
+                {l.note && <span style={{ color: '#6e7b91' }}> — {l.note}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+
     function LangSwitch() {
       const { lang, setLang } = useLang();
       const opt = (id, label) => (
@@ -227,14 +305,35 @@
             ))}
           </div>
 
+          <h3 style={{ color: '#f0f0f0', fontSize: 18, marginTop: 32 }}>{t('Métodos de recolección de inventario', 'Inventory collection methods')}</h3>
+          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7, margin: '8px 0 0' }}>
+            {t('Un mismo dispositivo puede inventariarse de formas distintas según la huella y el control que necesites. La documentación oficial los denomina así:',
+               'A device can be inventoried in different ways depending on the footprint and control you need. The official documentation names them as follows:')}
+          </p>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 12 }}>
+              <thead><TRow header cells={[t('Método', 'Method'), t('Descripción', 'Description'), t('Documentación', 'Documentation')]} /></thead>
+              <tbody>
+                <TRow cells={['Adopted', t('Agente completo instalado y gestionado por el Inventory Beacon (adopción). Se rige por políticas y puede auto-actualizarse.', 'Full agent installed and managed by the Inventory Beacon (adoption). Policy-driven and able to self-upgrade.'), <Ext href={DOC.fiaSysReqs}>{t('Requisitos', 'System requirements')}</Ext>]} />
+                <TRow cells={['Third-party deployment', t('Agente completo instalado con tu propia herramienta de despliegue (SCCM, GPO, etc.); después se gobierna por política.', 'Full agent installed with your own deployment tool (SCCM, GPO, etc.); policy-driven afterwards.'), <Ext href={DOC.fa3Impl}>{t('Implementación', 'Implementation')}</Ext>]} />
+                <TRow cells={['Zero-footprint', t('El beacon ejecuta ndtrack de forma remota en el dispositivo; no se instala un agente persistente.', 'The beacon runs ndtrack remotely on the device; no persistent agent is installed.'), <Ext href={DOC.zfaSysReqs}>{t('Requisitos', 'System requirements')}</Ext>]} />
+                <TRow cells={['FlexNet Inventory Scanner', t('Herramienta autónoma que se ejecuta a demanda en el dispositivo para generar el inventario.', 'Standalone tool run on demand on the device to produce the inventory.'), <Ext href={DOC.fisSysReqs}>{t('Requisitos', 'System requirements')}</Ext>]} />
+              </tbody>
+            </table>
+          </div>
+          <InfoBox type="tip">
+            {t(<>La documentación de Flexera se publica por edición: las rutas <code>docs.flexera.com/fnms/EN/…</code> corresponden a <strong>IT Asset Management (Cloud)</strong> y las rutas con versión (p. ej. <code>FlexNetManagerSuite2025R1</code>) a las ediciones <strong>On-Premises</strong>. Consulta siempre la que coincida con tu instalación.</>,
+               <>Flexera documentation is published per edition: <code>docs.flexera.com/fnms/EN/…</code> paths cover <strong>IT Asset Management (Cloud)</strong>, while versioned paths (e.g. <code>FlexNetManagerSuite2025R1</code>) cover the <strong>On-Premises</strong> editions. Always use the one that matches your installation.</>)}
+          </InfoBox>
+
           <h3 style={{ color: '#f0f0f0', fontSize: 18, marginTop: 32 }}>{t('Requisitos Generales Comunes', 'Common General Requirements')}</h3>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 12 }}>
               <thead><TRow header cells={[t('Requisito', 'Requirement'), 'FlexNet Agent (Eng. Apps)', 'FlexNet Inventory Agent']} /></thead>
               <tbody>
                 <TRow cells={[t('Arquitectura', 'Architecture'), t('64-bit obligatorio (Windows y Linux)', '64-bit required (Windows and Linux)'), t('64-bit recomendado', '64-bit recommended')]} />
-                <TRow cells={[t('RAM mínima', 'Minimum RAM'), t('512 MB recomendado', '512 MB recommended'), t('2 GB recomendado', '2 GB recommended')]} />
-                <TRow cells={[t('Puertos por defecto', 'Default ports'), t('Puerto del servidor FNMEA (ej. 443/8888)', 'FNMEA server port (e.g. 443/8888)'), t('HTTP 80 (beacon upload/download)', 'HTTP 80 (beacon upload/download)')]} />
+                <TRow cells={[t('RAM mínima', 'Minimum RAM'), t('512 MB recomendado', '512 MB recommended'), t('Mín. 512 MB · 2 GB recomendado', 'Min. 512 MB · 2 GB recommended')]} />
+                <TRow cells={[t('Puertos por defecto', 'Default ports'), t('Puerto del servidor FNMEA (ej. 443/8888)', 'FNMEA server port (e.g. 443/8888)'), t('HTTP 80 · HTTPS 443 (subida/descarga con el beacon)', 'HTTP 80 · HTTPS 443 (beacon upload/download)')]} />
                 <TRow cells={[t('Permisos', 'Permissions'), t('Administrador local / root', 'Local administrator / root'), t('Administrador / root (servicios del sistema)', 'Administrator / root (system services)')]} />
                 <TRow cells={[t('Conectividad', 'Connectivity'), t('Al servidor FlexNet Manager', 'To the FlexNet Manager server'), t('Al Inventory Beacon asignado', 'To the assigned Inventory Beacon')]} />
               </tbody>
@@ -246,6 +345,41 @@
               <>All installers are downloaded from the <strong>Flexera Product and License Center</strong> (community.flexera.com → Download Products and Licenses). You need active Flexera Community credentials.</>
             )}
           </InfoBox>
+
+          <h3 style={{ color: '#f0f0f0', fontSize: 18, marginTop: 32 }}>{t('Espacio en disco y consumo del FlexNet Inventory Agent', 'FlexNet Inventory Agent disk space and resource usage')}</h3>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 12 }}>
+              <thead><TRow header cells={[t('Plataforma', 'Platform'), t('Paquete', 'Package'), t('Descarga (MB)', 'Download (MB)'), t('Instalado (MB)', 'Installed (MB)'), 'Workspace (MB)']} /></thead>
+              <tbody>
+                <TRow cells={['Windows', 'MSI', '30', '60', '160']} />
+                <TRow cells={['Linux x86_64', 'RPM', '36', '65', '160']} />
+                <TRow cells={['Linux i386', 'RPM', '11', '27', '120']} />
+                <TRow cells={['macOS', 'Mac Package Bundle', '22', '55', '150']} />
+                <TRow cells={['AIX', 'LPP', '25', '33', '120']} />
+                <TRow cells={['HP-UX', 'SD-UX', '74', '74', '180']} />
+                <TRow cells={['Solaris SPARC', 'Sys V (pkg)', '30', '30', '120']} />
+                <TRow cells={['Solaris x86', 'Sys V (pkg)', '25', '25', '110']} />
+              </tbody>
+            </table>
+          </div>
+          <InfoBox type="info">
+            {t(<>El <em>workspace</em> depende del tamaño de los paquetes de actualización, los ficheros de inventario pendientes, el seguimiento de uso y el crecimiento de los logs. Rutas por defecto — instalación: <code>%ProgramFiles(x86)%\ManageSoft</code> (Windows) y <code>/opt/managesoft</code> (UNIX-like); datos de trabajo: <code>C:\ProgramData\ManageSoft Corp</code> y <code>/var/opt/managesoft</code>.</>,
+               <>The <em>workspace</em> depends on update package size, pending inventory files, usage tracking and log growth. Default paths — installation: <code>%ProgramFiles(x86)%\ManageSoft</code> (Windows) and <code>/opt/managesoft</code> (UNIX-like); working data: <code>C:\ProgramData\ManageSoft Corp</code> and <code>/var/opt/managesoft</code>.</>)}
+          </InfoBox>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 12 }}>
+              <thead><TRow header cells={[t('Tarea', 'Task'), t('Duración', 'Run time'), 'CPU', t('Memoria', 'Memory'), t('Red', 'Network')]} /></thead>
+              <tbody>
+                <TRow cells={[t('Recolección de inventario', 'Inventory collection'), '13–240 s', t('5–130 s (10–50 % de un núcleo)', '5–130 s (10–50 % of one core)'), '4–20 MB', t('10–200 KB por subida', '10–200 KB per upload')]} />
+                <TRow cells={[t('Monitorización de uso', 'Usage monitoring'), t('Continua', 'Ongoing'), t('< 1 s al día', '< 1 s per day'), '4–8 MB', t('5–20 KB al día', '5–20 KB per day')]} />
+                <TRow cells={[t('Actualización de política', 'Policy update'), '15–33 s', t('< 1 s por política', '< 1 s per policy'), '3–5 MB', t('10–100 KB por actualización', '10–100 KB per update')]} />
+              </tbody>
+            </table>
+          </div>
+          <p style={{ color: '#6e7b91', fontSize: 12, lineHeight: 1.6, margin: '8px 0 0' }}>
+            {t('Valores orientativos de la documentación oficial para el agente completo (Adopted). Si se usa proxy pueden necesitarse puertos adicionales.',
+               'Indicative figures from the official documentation for the full agent (Adopted). Additional ports may be needed when a proxy is used.')}
+          </p>
 
           <h3 style={{ color: '#f0f0f0', fontSize: 18, marginTop: 32 }}>{t('Arquitectura de Comunicación', 'Communication Architecture')}</h3>
           <div className="arch-diagram" style={{ background: '#0d1117', borderRadius: 12, padding: 24, border: '1px solid #1e2a3a', margin: '12px 0', fontFamily: "'SF Mono', Consolas, monospace", fontSize: 13, color: '#c9d1d9', lineHeight: 2, textAlign: 'center' }}>
@@ -263,6 +397,13 @@
               <div><div style={{ color: '#555' }}>│ HTTP/80</div><div style={{ color: '#555' }}>▼</div><div style={{ color: '#1a85ff' }}>[ Agent Mac ]</div></div>
             </div>
           </div>
+          <DocLinks links={[
+            { label: 'Flexera Documentation Center', url: DOC.home, note: t('Punto de entrada a toda la documentación', 'Entry point to all documentation') },
+            { label: 'Adopted: System Requirements', url: DOC.fiaSysReqs, note: t('Plataformas, disco, memoria y puertos', 'Platforms, disk, memory and ports') },
+            { label: 'Agent Third-Party Deployment: Implementation', url: DOC.fa3Impl, note: t('Despliegue con herramientas propias', 'Deployment with your own tools') },
+            { label: 'Network Requirements (IT Asset Management)', url: DOC.networkReqs, note: t('Dominios y requisitos de red', 'Domains and network requirements') },
+            { label: 'FlexNet Inventory Agent Change Log', url: DOC.changelog, note: t('Novedades por versión', 'What changed in each version') },
+          ]} />
         </div>
       );
     }
@@ -341,6 +482,13 @@ net start "FlexNet Agent"
 
 :: Uninstall
 FlexNetAgent-5.17-windows-x64.exe -i silent -r`)}</CodeBlock>
+            <DocLinks links={[
+              { label: 'FlexNet Agent Installation Guide', url: DOC.fnmeaAgent, note: t('Guía de instalación del FlexNet Agent', 'FlexNet Agent installation guide') },
+              { label: 'Installing Using the InstallAnywhere Installation Wizard on Microsoft Windows', url: DOC.fnmeaWizard, note: t('Publicada para FlexNet Agent 5.7 (2020 R1); comprueba la de tu versión', 'Published for FlexNet Agent 5.7 (2020 R1); check the one for your version') },
+              { label: 'FlexNet Manager for Engineering Applications Installation Guide', url: DOC.fnmeaInstall },
+              { label: 'FlexNet Manager for Engineering Applications Concepts Guide', url: DOC.fnmeaConcept },
+              { label: 'Flexera Product and License Center', url: DOC.plc, note: t('Descarga de instaladores', 'Installer downloads') },
+            ]} />
           </div>) : (<div>
             <InfoBox type="info">
               {t(<>El FlexNet Inventory Agent se comunica con un <strong>Inventory Beacon</strong> intermedio para reportar al servidor central.</>,
@@ -356,25 +504,66 @@ FlexNetAgent-5.17-windows-x64.exe -i silent -r`)}</CodeBlock>
                  <>From the web console: <strong>Discovery &amp; Inventory → Settings → Inventory agent for download</strong>.</>)}
             </StepCard>
             <StepCard number={2} title={t('Preparar el archivo bootstrap', 'Prepare the bootstrap file')}>
-              {t(<>Descarga y edita <code>mgssetup.ini</code> con la URL de tu beacon.</>,
-                 <>Download and edit <code>mgssetup.ini</code> with your beacon URL.</>)}
+              {t(<>Descarga y edita <code>mgssetup.ini</code> en un editor de texto plano (sin caracteres no ASCII; las líneas que empiezan por <code>;</code> son comentarios). Los ajustes clave son <code>INSTALLMACHINEPOLICY</code> (descomentar y poner a <code>true</code>) y la URL del beacon en la sección <code>[Custom Install Settings]</code>.</>,
+                 <>Download and edit <code>mgssetup.ini</code> in a plain-text editor (no non-ASCII characters; lines starting with <code>;</code> are comments). The key settings are <code>INSTALLMACHINEPOLICY</code> (uncomment and set to <code>true</code>) and the beacon URL in the <code>[Custom Install Settings]</code> section.</>)}
             </StepCard>
-            <CodeBlock title={t('Ejemplo mgssetup.ini', 'mgssetup.ini example')}>{t(`[ManageSoft]
-MGSFT_BOOTSTRAP_DOWNLOAD=http://beacon.empresa.com/ManageSoftDL
-MGSFT_BOOTSTRAP_UPLOAD=http://beacon.empresa.com/ManageSoftRL
-MGSFT_RUNPOLICY=1`,
-`[ManageSoft]
-MGSFT_BOOTSTRAP_DOWNLOAD=http://beacon.company.com/ManageSoftDL
-MGSFT_BOOTSTRAP_UPLOAD=http://beacon.company.com/ManageSoftRL
-MGSFT_RUNPOLICY=1`)}</CodeBlock>
+            <CodeBlock title={t('Extracto orientativo de mgssetup.ini', 'mgssetup.ini excerpt (illustrative)')}>{t(`; Extracto: parte siempre de la plantilla descargada desde la consola web.
+; Directorio de instalación (opcional)
+TMPMAINDIR = E:\\Program Files (x86)\\Flexera Software\\Agent
+
+; Contactar con el beacon justo tras instalar para obtener la política
+INSTALLMACHINEPOLICY = true
+
+[Custom Install Settings]
+; Descomenta y edita la 2.ª línea de esta sección de la plantilla con la URL del beacon:
+;   https://beacon.empresa.com/ManageSoftDL
+;   (http:// o https://, host/FQDN/IP, no UNC, termina en ManageSoftDL, máx. 80 caracteres)`,
+`; Excerpt: always start from the template downloaded from the web console.
+; Installation directory (optional)
+TMPMAINDIR = E:\\Program Files (x86)\\Flexera Software\\Agent
+
+; Contact the beacon right after installing to fetch policy
+INSTALLMACHINEPOLICY = true
+
+[Custom Install Settings]
+; Uncomment and edit the 2nd line of this section in the template with your beacon URL:
+;   https://beacon.company.com/ManageSoftDL
+;   (http:// or https://, host/FQDN/IP, not a UNC path, ends in ManageSoftDL, max. 80 characters)`)}</CodeBlock>
+            <InfoBox type="warning">
+              {t(<>Sin <code>INSTALLMACHINEPOLICY</code> el agente se instala pero queda a la espera de que otra fuente le entregue una política. Si la URL del beacon es incorrecta, los dispositivos no quedarán gestionados y habrá que reinstalarlos; si no se obtiene la política durante la instalación, el agente reintenta en cada reinicio.</>,
+                 <>Without <code>INSTALLMACHINEPOLICY</code> the agent installs but sits idle, waiting for a policy from another source. If the beacon URL is wrong, devices will not be managed and will need to be reinstalled; if policy cannot be retrieved during installation, the agent retries at each reboot.</>)}
+            </InfoBox>
+            <InfoBox type="tip">
+              {t('El seguimiento de uso de aplicaciones (application metering) está deshabilitado por defecto (USAGEAGENT_DISABLE = True); también puede definirse por regla de Discovery & Inventory desde la interfaz web.',
+                 'Application usage tracking (application metering) is disabled by default (USAGEAGENT_DISABLE = True); it can also be set per discovery and inventory rule in the web interface.')}
+            </InfoBox>
             <StepCard number={3} title={t('Instalar con msiexec', 'Install with msiexec')}>{t('Instalación silenciosa:', 'Silent installation:')}</StepCard>
             <CodeBlock title={t('Instalación silenciosa MSI', 'MSI silent installation')}>{`msiexec /i ManageSoft.msi /qn
 msiexec /i ManageSoft.msi /qn /l*v C:\\temp\\flexnet_install.log
 msiexec /i ManageSoft.msi /qn INSTALLDIR="C:\\Program Files (x86)\\ManageSoft"`}</CodeBlock>
             <StepCard number={4} title={t('Verificar', 'Verify')}>
-              {t(<>Instalación: <code>%ProgramFiles(x86)%\ManageSoft</code>. Logs: <code>%ProgramData%\ManageSoft\log</code>.</>,
-                 <>Installation: <code>%ProgramFiles(x86)%\ManageSoft</code>. Logs: <code>%ProgramData%\ManageSoft\log</code>.</>)}
+              {t(<>Instalación: <code>%ProgramFiles(x86)%\ManageSoft</code>. Datos de trabajo: <code>%ProgramData%\ManageSoft Corp</code>. Logs: <code>%TEMP%\ManageSoft</code> de la cuenta que ejecuta el componente (para el servicio, normalmente <code>C:\Windows\Temp\ManageSoft</code>).</>,
+                 <>Installation: <code>%ProgramFiles(x86)%\ManageSoft</code>. Working data: <code>%ProgramData%\ManageSoft Corp</code>. Logs: <code>%TEMP%\ManageSoft</code> of the account running the component (for the service, normally <code>C:\Windows\Temp\ManageSoft</code>).</>)}
             </StepCard>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Forzar política e inventario manualmente', 'Run policy and inventory manually')}</h3>
+            <CodeBlock title={t('CMD elevado', 'Elevated CMD')}>{t(`:: Descargar y aplicar la política
+cd "%ProgramFiles(x86)%\\ManageSoft\\Policy Client"
+mgspolicy.exe -t machine
+
+:: Recolectar inventario
+cd "%ProgramFiles(x86)%\\ManageSoft\\Tracker"
+ndtrack.exe -t machine`,
+`:: Download and apply the policy
+cd "%ProgramFiles(x86)%\\ManageSoft\\Policy Client"
+mgspolicy.exe -t machine
+
+:: Collect inventory
+cd "%ProgramFiles(x86)%\\ManageSoft\\Tracker"
+ndtrack.exe -t machine`)}</CodeBlock>
+            <InfoBox type="tip">
+              {t('Al ejecutarlos a mano, los logs (policy.log, tracker.log) quedan en el directorio temporal del usuario que los lanza: %TEMP%\\ManageSoft. Con un CMD elevado suele coincidir con el de administrador, no con el del servicio.',
+                 'When you run them by hand, the logs (policy.log, tracker.log) land in the temp directory of the user who launched them: %TEMP%\\ManageSoft. With an elevated CMD this is usually the administrator\'s, not the service\'s.')}
+            </InfoBox>
             <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Logs clave', 'Key logs')}</h3>
             <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
               <thead><TRow header cells={[t('Archivo', 'File'), t('Componente', 'Component')]} /></thead>
@@ -385,11 +574,20 @@ msiexec /i ManageSoft.msi /qn INSTALLDIR="C:\\Program Files (x86)\\ManageSoft"`}
                 <TRow cells={['schedule.log', t('Programador (ndschedag)', 'Scheduler (ndschedag)')]} />
                 <TRow cells={['uploader.log', t('Subida (ndupload)', 'Upload (ndupload)')]} />
                 <TRow cells={['usageagent.log', t('Tracking de uso (mgsusageag)', 'Usage tracking (mgsusageag)')]} />
+                <TRow cells={['agent_configuration.log', t('Configuración del agente (flxconfig)', 'Agent configuration (flxconfig)')]} />
               </tbody>
             </table></div>
             <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Desinstalación', 'Uninstallation')}</h3>
             <CodeBlock title={t('Desinstalar', 'Uninstall')}>{`msiexec /x ManageSoft.msi /qn
 msiexec /x {PRODUCT-CODE-GUID} /qn`}</CodeBlock>
+            <DocLinks links={[
+              { label: 'Adopted: System Requirements', url: DOC.fiaSysReqs },
+              { label: 'Agent Third-Party Deployment: Implementation', url: DOC.fa3Impl, note: t('Incluye los subtemas de configuración para Windows', 'Includes the Windows configuration subtopics') },
+              { label: 'Agent Third-Party Deployment: Edit the Configuration File for Microsoft Windows', url: DOC.fa3SetupIni, note: 'mgssetup.ini' },
+              { label: 'Adopted: Troubleshooting Inventory', url: DOC.fiaTrouble },
+              { label: 'LogFile (inventory component)', url: DOC.logFile, note: t('Ubicación de tracker.log', 'tracker.log location') },
+              { label: 'Command Lines', url: DOC.commandLines, note: 'mgspolicy · ndlaunch · ndschedag · ndtrack · ndupload · flxconfig' },
+            ]} />
           </div>)}
         </div>
       );
@@ -437,6 +635,11 @@ tail -f /var/log/flexnetagent/*.log`}</CodeBlock>
               {t(<>Desde 2025 R2, el agente soporta <strong>ARM64</strong> para entornos como AWS Graviton. Funcionalidad equivalente a x86_64.</>,
                  <>Since 2025 R2, the agent supports <strong>ARM64</strong> for environments such as AWS Graviton. Functionality is equivalent to x86_64.</>)}
             </InfoBox>
+            <DocLinks links={[
+              { label: 'FlexNet Agent Installation Guide', url: DOC.fnmeaAgent },
+              { label: 'FlexNet Manager for Engineering Applications Installation Guide', url: DOC.fnmeaInstall },
+              { label: 'Flexera Product and License Center', url: DOC.plc, note: t('Descarga de instaladores', 'Installer downloads') },
+            ]} />
           </div>) : (<div>
             <InfoBox type="warning">
               {t(<>Requiere <strong>root</strong>. Instala dos servicios: <code>ndschedag</code> (programador) y <code>mgsusageag</code> (tracking de uso).</>,
@@ -490,6 +693,21 @@ EOF
               {t('En Linux, si usas HTTPS para comunicación con el beacon, necesitarás configurar manualmente los certificados CA (a diferencia de Windows donde es automático).',
                  'On Linux, if you use HTTPS to communicate with the beacon, you will need to configure the CA certificates manually (unlike Windows, where this is automatic).')}
             </InfoBox>
+            <InfoBox type="info">
+              {t(<>Si configuras el bootstrap para instalar en modo <strong>least privilege</strong>, configura <code>sudo</code> en el sistema UNIX de destino. Para completar la configuración de certificados durante la instalación, el fichero debe estar en el dispositivo antes de ejecutar el instalador; si no, tras instalar puedes copiar el certificado completo a <code>/var/opt/managesoft/etc/ssl/cert.pem</code>.</>,
+                 <>If you configure the bootstrap for the <strong>least privilege</strong> operation mode, configure <code>sudo</code> on the target UNIX system. To complete certificate set-up during installation, the file must be on the device before you run the installer; otherwise, after installing you can copy the completed certificate to <code>/var/opt/managesoft/etc/ssl/cert.pem</code>.</>)}
+            </InfoBox>
+            <InfoBox type="tip">
+              {t(<>Según el changelog del agente: la versión 22.2.0 introdujo la actualización automática en distribuciones basadas en Debian, 24.4.0 eliminó la dependencia de <code>librt.so</code> en el agente Linux y 25.0.0 da preferencia a <code>systemd</code> y corrige el arranque tras reinicio en SUSE.</>,
+                 <>According to the agent change log: 22.2.0 introduced automatic upgrade on Debian-based distributions, 24.4.0 removed the <code>librt.so</code> dependency from the Linux agent, and 25.0.0 prefers <code>systemd</code> and fixes startup after reboot on SUSE.</>)}
+            </InfoBox>
+            <DocLinks links={[
+              { label: 'Agent Third-Party Deployment: Installing FlexNet inventory agent on UNIX', url: DOC.fa3InstallUnix },
+              { label: 'Agent Third-Party Deployment: Configuring Installations on UNIX-like Platforms', url: DOC.fa3CustomUnix, note: t('Bootstrap, modos de operación y rutas personalizadas', 'Bootstrap, operation modes and custom paths') },
+              { label: 'Agent Third-Party Deployment: Sample UNIX Bootstrap Configuration File', url: DOC.fa3Sample },
+              { label: 'Adopted: System Requirements', url: DOC.fiaSysReqs },
+              { label: 'FlexNet Inventory Agent Change Log', url: DOC.changelog },
+            ]} />
           </div>)}
         </div>
       );
@@ -549,6 +767,21 @@ EOF
             {t(<><strong>Problema conocido — Java:</strong> Puede aparecer un popup de Java obsoleto. Excluye <code>/System/Library/Frameworks/JavaVM.framework</code> del file scanning en Inventory Settings.</>,
                <><strong>Known issue — Java:</strong> An outdated-Java popup may appear. Exclude <code>/System/Library/Frameworks/JavaVM.framework</code> from file scanning in Inventory Settings.</>)}
           </InfoBox>
+          <InfoBox type="info">
+            {t(<>Para el despliegue <em>core</em>, la documentación lista macOS <strong>10.15.4–15</strong> en procesadores Intel y Apple serie M. El agente completo (Adopted) ocupa 22 MB de descarga, 55 MB instalado y unos 150 MB de workspace.</>,
+               <>For the <em>core</em> deployment, the documentation lists macOS <strong>10.15.4–15</strong> on Intel and Apple M-series processors. The full agent (Adopted) takes 22 MB to download, 55 MB installed and about 150 MB of workspace.</>)}
+          </InfoBox>
+          <InfoBox type="tip">
+            {t('Desde la versión 24.3.0 del agente, los escaneos de macOS omiten los ficheros «on-demand» de OneDrive que solo existen en la nube.',
+               'Since agent version 24.3.0, macOS scans skip OneDrive "on-demand" files that exist only in the cloud.')}
+          </InfoBox>
+          <DocLinks links={[
+            { label: 'Adopted: System Requirements', url: DOC.fiaSysReqs },
+            { label: 'Core Deployment: System Requirements', url: DOC.coDepSysReqs },
+            { label: 'Agent Third-Party Deployment: Installing FlexNet inventory agent on UNIX', url: DOC.fa3InstallUnix, note: t('macOS se documenta dentro de las plataformas UNIX-like', 'macOS is documented under the UNIX-like platforms') },
+            { label: 'Agent Third-Party Deployment: Configuring Installations on UNIX-like Platforms', url: DOC.fa3CustomUnix },
+            { label: 'FlexNet Inventory Agent Change Log', url: DOC.changelog },
+          ]} />
         </div>
       );
     }
@@ -588,39 +821,96 @@ EOF
               {t(<>Arquitecturas: <strong>x86_64</strong>, <strong>ARM64/Aarch64</strong>, <strong>s390x</strong> (IBM System z). Solo <strong>un agente por clúster</strong>.</>,
                  <>Architectures: <strong>x86_64</strong>, <strong>ARM64/Aarch64</strong>, <strong>s390x</strong> (IBM System z). Only <strong>one agent per cluster</strong>.</>)}
             </p>
+            <InfoBox type="info">
+              {t(<><strong>Requisitos previos:</strong> un equipo Linux con navegador y Docker; un registro de contenedores OCI accesible desde el clúster; <code>kubectl</code> apuntando al clúster con una cuenta de administrador (que pueda crear Namespace, ServiceAccount, ClusterRole, ClusterRoleBinding y Deployment); y almacenamiento persistente (PVC) de al menos <strong>2 GB</strong>, modo <code>ReadWriteOnce</code> y volumen <code>Filesystem</code>, no compartido y que sobreviva a reinicios y actualizaciones del pod.</>,
+                 <><strong>Prerequisites:</strong> a Linux machine with a browser and Docker; an OCI container registry reachable from the cluster; <code>kubectl</code> pointing at the cluster with an administrator account (able to create Namespace, ServiceAccount, ClusterRole, ClusterRoleBinding and Deployment); and persistent storage (PVC) of at least <strong>2 GB</strong>, <code>ReadWriteOnce</code> access mode and <code>Filesystem</code> volume mode, not shared and surviving pod restarts and upgrades.</>)}
+            </InfoBox>
             <StepCard number={1} title={t('Descargar', 'Download')}>
               {t(<>En la consola web: <strong>Data Collection → Inventory Settings → Inventory agent for download</strong>.</>,
                  <>In the web console: <strong>Data Collection → Inventory Settings → Inventory agent for download</strong>.</>)}
             </StepCard>
-            <StepCard number={2} title={t('Cargar imagen en registro OCI', 'Load the image into an OCI registry')}>
-              {t('Subir al registro de contenedores de tu organización:', 'Push it to your organization\'s container registry:')}
+            <StepCard number={2} title={t('Extraer y cargar la imagen', 'Extract and load the image')}>
+              {t('Importa una sola arquitectura de krm (x86_64, aarch64 o s390x):', 'Import only one krm architecture (x86_64, aarch64 or s390x):')}
             </StepCard>
-            <CodeBlock title={t('Cargar imagen', 'Load image')}>{t(`tar xzf flexera-kubernetes-agent-[VERSION].tar.gz
-docker load -i images/flexera-kia-[VERSION]-x86_64.tar
-docker tag flexera-kia:[VERSION] registro.empresa.com/flexera-kia:[VERSION]
-docker push registro.empresa.com/flexera-kia:[VERSION]`,
-`tar xzf flexera-kubernetes-agent-[VERSION].tar.gz
-docker load -i images/flexera-kia-[VERSION]-x86_64.tar
-docker tag flexera-kia:[VERSION] registry.company.com/flexera-kia:[VERSION]
-docker push registry.company.com/flexera-kia:[VERSION]`)}</CodeBlock>
-            <StepCard number={3} title={t('Generar YAML de configuración', 'Generate the configuration YAML')}>
-              {t('Script interactivo. Valores obligatorios: URL del beacon y URL del registro OCI.',
-                 'Interactive script. Required values: beacon URL and OCI registry URL.')}
+            <CodeBlock title={t('Cargar imagen', 'Load image')}>{`tar xzf flexera-krm-operator-x.y.z.tar.gz
+cd flexera-krm-operator-x.y.z
+cd krm-d.e.f           # x86_64  (krm-d.e.f-aarch64 / krm-d.e.f-s390x)
+docker load < flexera-krm-x.y.z.tar`}</CodeBlock>
+            <StepCard number={3} title={t('Etiquetar y subir al registro', 'Tag and push to your registry')}>
+              {t(<>Antepón la URL de tu registro y <strong>no cambies</strong> la parte <code>flexera/krm</code> del nombre. Inicia sesión antes con una cuenta administradora del registro.</>,
+                 <>Prepend your registry URL and <strong>do not change</strong> the <code>flexera/krm</code> part of the name. Log in first with an administrator account on the registry.</>)}
             </StepCard>
-            <CodeBlock title={t('Generar YAML', 'Generate YAML')}>{t(`./generate.sh
-# Pregunta URL del beacon (obligatorio)
-# Pregunta URL del registro OCI (obligatorio)
-# Arquitectura, configuraciones avanzadas (opcional)`,
-`./generate.sh
-# Asks for the beacon URL (required)
-# Asks for the OCI registry URL (required)
-# Architecture, advanced settings (optional)`)}</CodeBlock>
-            <StepCard number={4} title={t('Instalar en el clúster', 'Install on the cluster')}>{t('Ejecutar el script de instalación:', 'Run the installation script:')}</StepCard>
-            <CodeBlock title={t('Instalar', 'Install')}>{`./install.sh`}</CodeBlock>
+            <CodeBlock title={t('Subir imagen', 'Push image')}>{`docker tag flexera/krm:x.y.z registry.company.com/flexera/krm:x.y.z
+docker push registry.company.com/flexera/krm:x.y.z`}</CodeBlock>
+            <StepCard number={4} title={t('Instalar el operador en el clúster', 'Install the operator on the cluster')}>
+              {t(<>El parámetro <code>--registry</code> es obligatorio. Opcionales: <code>--ibm-licensing</code> (integración con IBM License Service) y <code>--openshift</code> (OpenShift ejecuta el contenedor como root y crea una SecurityContextConstraints). Volver a ejecutar el script con otros parámetros sobrescribe la instalación anterior.</>,
+                 <>The <code>--registry</code> parameter is mandatory. Optional: <code>--ibm-licensing</code> (IBM License Service integration) and <code>--openshift</code> (OpenShift runs the container as root and creates a SecurityContextConstraints entry). Re-running the script with different parameters overwrites the previous installation.</>)}
+            </StepCard>
+            <CodeBlock title={t('Instalar', 'Install')}>{`kubectl config set-context cluster-one --user=administrator
+./install.sh --registry registry.company.com
+# Con todas las opciones / With all options:
+# ./install.sh --registry registry.company.com --ibm-licensing --openshift
+# Ayuda / Help: ./install.sh --help   (OLM: ./olm-install.sh)`}</CodeBlock>
+            <StepCard number={5} title={t('Generar el YAML de configuración', 'Generate the configuration YAML')}>
+              {t(<>Script interactivo. Valores obligatorios: <code>spec.monitor.beaconURL</code> (URL del beacon) y <code>spec.monitor.storage</code> (PersistentVolumeClaimSpec). Por defecto guarda <code>krm.yaml</code>.</>,
+                 <>Interactive script. Mandatory values: <code>spec.monitor.beaconURL</code> (beacon URL) and <code>spec.monitor.storage</code> (PersistentVolumeClaimSpec). It saves <code>krm.yaml</code> by default.</>)}
+            </StepCard>
+            <CodeBlock title={t('Generar y aplicar', 'Generate and apply')}>{`./generate.sh
+kubectl apply -f krm.yaml`}</CodeBlock>
+            <CodeBlock title={t('Ejemplo de krm.yaml mínimo', 'Minimal krm.yaml example')}>{`apiVersion: agents.flexera.com/v1
+kind: KRM
+metadata:
+  name: instance
+spec:
+  monitor:
+    beaconURL: https://beacon.company.com
+    storage:
+      storageClassName: default
+      resources:
+        requests:
+          storage: 2Gi`}</CodeBlock>
+            <InfoBox type="info">
+              {t(<><code>install.sh</code> crea en el clúster: la CustomResourceDefinition <code>krms.agents.flexera.com</code>, el Namespace <code>flexera</code>, las ServiceAccounts del controlador y del agente, los ClusterRole/ClusterRoleBinding correspondientes (el agente además queda enlazado al ClusterRole integrado <code>view</code>) y el Deployment del controlador.</>,
+                 <><code>install.sh</code> creates in the cluster: the <code>krms.agents.flexera.com</code> CustomResourceDefinition, the <code>flexera</code> Namespace, the controller and agent ServiceAccounts, the matching ClusterRole/ClusterRoleBinding objects (the agent is also bound to the built-in <code>view</code> ClusterRole) and the controller Deployment.</>)}
+            </InfoBox>
+            <InfoBox type="tip">
+              {t('Por defecto el agente recolecta y sube el inventario una vez al día (24 h). En Flexera One, el agente también se descarga desde la página Installers (Data Collection → IT Visibility Inventory Tasks → Installers).',
+                 'By default the agent collects and uploads its inventory once a day (24 h). In Flexera One the agent is also available from the Installers page (Data Collection → IT Visibility Inventory Tasks → Installers).')}
+            </InfoBox>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Alternativa: Helm', 'Alternative: Helm')}</h3>
+            <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+              {t(<>Flexera publica charts de Helm predefinidos en su galería de AWS ECR: <Ext href={DOC.krmChart}>krm-chart</Ext> (agente completo) y <Ext href={DOC.lwkChart}>lwk-chart</Ext> (agente ligero).</>,
+                 <>Flexera publishes predefined Helm charts in its AWS ECR gallery: <Ext href={DOC.krmChart}>krm-chart</Ext> (full agent) and <Ext href={DOC.lwkChart}>lwk-chart</Ext> (lightweight agent).</>)}
+            </p>
+            <CodeBlock title={t('Helm (agente completo)', 'Helm (full agent)')}>{`helm install release-name oci://public.ecr.aws/flexera/krm-chart \\
+  --set monitor.beaconURL="https://beacon.company.com" \\
+  --namespace flexera --create-namespace`}</CodeBlock>
+            <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('¿Agente completo o ligero?', 'Full or lightweight agent?')}</h3>
+            <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
+              <thead><TRow header cells={[t('Aspecto', 'Aspect'), 'Flexera Kubernetes Inventory Agent', 'Lightweight Kubernetes Agent']} /></thead>
+              <tbody>
+                <TRow cells={[t('Cuándo elegirlo', 'When to choose it'), t('Recomendado para la mayoría de entornos: sencillo y con inventario completo del software dentro de los contenedores', 'Recommended for most environments: easy to use, with complete software inventory of container contents'), t('Cuando otra herramienta ya inventaría las imágenes y los requisitos adicionales del agente completo no encajan', 'When another tool already inventories the images and the extra requirements of the full agent are a poor fit')]} />
+                <TRow cells={[t('Configuración mínima', 'Minimum configuration'), t('URL del beacon + almacenamiento persistente', 'Beacon URL + persistent storage'), t('Solo la URL del beacon', 'Beacon URL only')]} />
+                <TRow cells={[t('Instalación', 'Installation'), t('install.sh + generate.sh, o Helm', 'install.sh + generate.sh, or Helm'), t('Script (install.sh), manual (YAML) o Helm', 'Script (install.sh), manual (YAML) or Helm')]} />
+              </tbody>
+            </table></div>
             <InfoBox type="danger">
               {t(<>Solo <strong>una instancia</strong> del agente por clúster. Si ya existe uno, fusiona la configuración.</>,
                  <>Only <strong>one instance</strong> of the agent per cluster. If one already exists, merge the configuration.</>)}
             </InfoBox>
+            <DocLinks links={[
+              { label: 'Two FlexNet Kubernetes Agents', url: DOC.k8sTwo, note: t('Comparativa agente completo vs ligero', 'Full vs lightweight comparison') },
+              { label: 'Download Flexera Kubernetes Inventory Agent', url: DOC.k8sDownload, note: t('Procedimiento completo de instalación', 'Complete installation procedure') },
+              { label: 'Flexera Kubernetes Inventory Agent Configuration Examples', url: DOC.k8sExamples },
+              { label: 'Attributes for Agent Features', url: DOC.k8sFeatures, note: t('IBM License Service, intervalos, etc.', 'IBM License Service, intervals, etc.') },
+              { label: 'Kubernetes Agents Permissions', url: DOC.k8sPermissions, note: 'ClusterRole / ClusterRoleBinding' },
+              { label: 'Downloading the Lightweight Kubernetes Agent', url: DOC.lwkDownload },
+              { label: 'Lightweight agent: Scripted Installation', url: DOC.lwkScripted },
+              { label: 'Lightweight agent: Manual Installation', url: DOC.lwkManual },
+              { label: 'Lightweight Kubernetes Agent Helm chart configuration and installation', url: DOC.lwkHelm },
+              { label: 'Helm chart templates (release note)', url: DOC.helmNews },
+              { label: 'Uninstalling the Flexera Kubernetes Agent', url: DOC.k8sUninstall },
+            ]} />
           </div>) : (<div>
             <InfoBox type="info">
               {t(<>Desde la versión <strong>15.0.0</strong> (2020 R1), el agente incluye un <strong>Docker tracker</strong>. <strong>No habilitado por defecto.</strong> Soporte para <strong>Podman</strong> añadido posteriormente.</>,
@@ -677,6 +967,15 @@ docker push registry.company.com/flexera-kia:[VERSION]`)}</CodeBlock>
               {t('Como las imágenes Docker son inmutables, el agente solo inventaría una vez por imagen. El usage agent trackea inicio/parada/destrucción de contenedores.',
                  'Since Docker images are immutable, the agent only inventories each image once. The usage agent tracks container start/stop/destroy events.')}
             </InfoBox>
+            <InfoBox type="info">
+              {t('Según el changelog del agente: 24.1.1 corrige que los servicios del monitor Podman/Docker no se habilitaban ni arrancaban tras la instalación (afectaba a 23.5.0–24.1.0), 24.2.0 corrige el monitor Podman con UIDs superiores a 2000 y 25.0.0 corrige la reconexión del monitor Docker tras reiniciar Docker. Si ves huecos de inventario, revisa tu versión de agente.',
+                 'According to the agent change log: 24.1.1 fixes Podman/Docker monitor services not being enabled and started after installation (affected 23.5.0–24.1.0), 24.2.0 fixes the Podman monitor for user IDs above 2000, and 25.0.0 fixes Docker monitor reconnection after a Docker restart. If you see inventory gaps, check your agent version.')}
+            </InfoBox>
+            <DocLinks links={[
+              { label: 'Flexera Container Monitor', url: DOC.containerMon },
+              { label: 'FlexNet Inventory Agent Change Log', url: DOC.changelog, note: t('Correcciones de los monitores Docker y Podman', 'Docker and Podman monitor fixes') },
+              { label: 'Adopted: System Requirements', url: DOC.fiaSysReqs },
+            ]} />
           </div>)}
         </div>
       );
@@ -696,11 +995,16 @@ docker push registry.company.com/flexera-kia:[VERSION]`)}</CodeBlock>
               <TRow cells={['80', 'HTTP', t('Comunicación por defecto agente ↔ Inventory Beacon', 'Default agent ↔ Inventory Beacon communication')]} />
               <TRow cells={['443', 'HTTPS', t('Comunicación segura con beacon o servidor central', 'Secure communication with the beacon or central server')]} />
               <TRow cells={['27000-27009', 'TCP', t('Rango por defecto de FlexNet Publisher (lmgrd)', 'Default FlexNet Publisher (lmgrd) range')]} />
+              <TRow cells={['61616', 'TCP', t('Valor por defecto del comando de rotación de logs de FlexNet Manager Suite hacia FlexNet Manager for Engineering Applications (según KB de Flexera)', 'Default for the log rotation command from FlexNet Manager Suite to FlexNet Manager for Engineering Applications (per Flexera KB)')]} />
             </tbody>
           </table></div>
           <InfoBox type="info">
             {t('Todos los puertos son configurables vía preferencias incluyendo el puerto en las URLs del beacon.',
                'All ports are configurable via preferences, including the port in the beacon URLs.')}
+          </InfoBox>
+          <InfoBox type="tip">
+            {t('En los firewalls entre el beacon y FlexNet Manager Suite (cloud) usa nombres DNS en lugar de direcciones IP: las IP pueden cambiar sin aviso o con poca antelación. La comunicación entre el beacon de nivel superior y la nube, y la ejecución remota, requieren IPv4.',
+               'On firewalls between the beacon and FlexNet Manager Suite (cloud), use DNS host names instead of IP addresses: IPs can change without notice or with little warning. Communication between the top-level beacon and the cloud, and remote execution, require IPv4.')}
           </InfoBox>
           <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>config.ini (UNIX/macOS)</h3>
           <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
@@ -718,6 +1022,44 @@ EOF
             {t('En Windows se almacena en el Registro. Se configura vía: parámetros MSI, transforms (.mst), bootstrap (mgssetup.ini), o políticas del beacon.',
                'On Windows it is stored in the Registry. It is configured via: MSI parameters, transforms (.mst), bootstrap (mgssetup.ini), or beacon policies.')}
           </p>
+          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Proxy', 'Proxy')}</h3>
+          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+            {t(<>En Windows el agente lee las preferencias de registro <code>http_proxy</code>, <code>https_proxy</code> y <code>no_proxy</code> (en <code>[Registry]\ManageSoft\Launcher\CurrentVersion</code>, notación de la documentación). En UNIX/macOS se pueden fijar desde el bootstrap:</>,
+               <>On Windows the agent reads the <code>http_proxy</code>, <code>https_proxy</code> and <code>no_proxy</code> registry preferences (under <code>[Registry]\ManageSoft\Launcher\CurrentVersion</code>, documentation notation). On UNIX/macOS they can be set from the bootstrap:</>)}
+          </p>
+          <CodeBlock title="/var/tmp/mgsft_rollout_response">{t(`# Configuración de proxy opcional (descomenta para activarla; NONE la desactiva)
+MGSFT_HTTP_PROXY=http://proxy.empresa.com:3128
+# MGSFT_HTTPS_PROXY=https://proxy.empresa.com:3129
+# MGSFT_NO_PROXY=interno1.local,interno2.local`,
+`# Optional proxy configuration (uncomment to enable; NONE disables it)
+MGSFT_HTTP_PROXY=http://proxy.company.com:3128
+# MGSFT_HTTPS_PROXY=https://proxy.company.com:3129
+# MGSFT_NO_PROXY=internal1.local,internal2.local`)}</CodeBlock>
+          <InfoBox type="warning">
+            {t(<>Los Inventory Beacons no admiten scripts de autoconfiguración de proxy (PAC). Existe además una <Ext href={DOC.noProxyKnown}>incidencia conocida</Ext> con la preferencia <code>no_proxy</code>; revísala antes de depender de ella. Desde la versión 24.2.0 del agente, la configuración de proxy da prioridad a la clave de proxy del beacon.</>,
+               <>Inventory Beacons do not support proxy auto-configuration (PAC) scripts. There is also a <Ext href={DOC.noProxyKnown}>known issue</Ext> with the <code>no_proxy</code> preference; check it before relying on it. Since agent version 24.2.0, proxy settings give priority to the beacon&apos;s proxy key.</>)}
+          </InfoBox>
+          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Configuración con flxconfig', 'Configuration with flxconfig')}</h3>
+          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+            {t(<>Desde la versión 22.2.0, el agente incluye <code>flxconfig</code>, el componente que comprueba y aplica la configuración del agente en el dispositivo (disponible con IT Asset Management). Normalmente se ejecuta sin parámetros; opciones principales:</>,
+               <>From version 22.2.0, the agent includes <code>flxconfig</code>, the component that checks and applies agent configuration on the device (available with IT Asset Management). It is normally run without parameters; main options:</>)}
+          </p>
+          <CodeBlock title="flxconfig">{t(`flxconfig                                        # comprobar y aplicar la configuración
+flxconfig --download-server http://beacon.empresa.com
+flxconfig --disable-upgrade true                 # no procesar paquetes de actualización
+flxconfig --disable-netselector true             # no procesar algoritmos de selección de beacon
+flxconfig --disable-failover true                # no procesar ajustes de failover
+flxconfig --local-config-file agent_config.json  # usar un JSON local en vez del beacon`,
+`flxconfig                                        # check and apply configuration
+flxconfig --download-server http://beacon.company.com
+flxconfig --disable-upgrade true                 # do not process upgrade packages
+flxconfig --disable-netselector true             # do not process beacon-selection algorithms
+flxconfig --disable-failover true                # do not process failover settings
+flxconfig --local-config-file agent_config.json  # use a local JSON instead of the beacon`)}</CodeBlock>
+          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+            {t(<>Su log por defecto es <code>%TEMP%\ManageSoft\agent_configuration.log</code> en Windows. La versión 23.4.0 añadió soporte del modo <code>LowProfile</code> a flxconfig.</>,
+               <>Its default log is <code>%TEMP%\ManageSoft\agent_configuration.log</code> on Windows. Version 23.4.0 added <code>LowProfile</code> mode support to flxconfig.</>)}
+          </p>
           <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Auto-actualización', 'Auto-update')}</h3>
           <InfoBox type="info">
             {t(<>En <strong>Inventory Settings → Version to deploy</strong> defines la versión objetivo. Agentes controlados por política se actualizan automáticamente.</>,
@@ -727,6 +1069,26 @@ EOF
             {t(<><strong>Limitación UNIX:</strong> Agentes instalados en modo "least privilege" en UNIX <strong>no pueden auto-actualizarse</strong>. Usa actualización manual o herramienta de terceros.</>,
                <><strong>UNIX limitation:</strong> Agents installed in "least privilege" mode on UNIX <strong>cannot auto-update</strong>. Use a manual update or a third-party tool.</>)}
           </InfoBox>
+          <InfoBox type="danger">
+            {t('Si ya usas una herramienta de terceros (p. ej. Microsoft Endpoint Configuration Manager, antes SCCM) para instalar las actualizaciones del agente, no permitas además las actualizaciones automáticas desde FlexNet Manager Suite.',
+               'If you already use a third-party tool (e.g. Microsoft Endpoint Configuration Manager, formerly SCCM) to install FlexNet Inventory Agent updates, do not also allow automatic updates from FlexNet Manager Suite.')}
+          </InfoBox>
+          <CodeBlock title={t('FNMS on-premises: versiones de agente (desde installation-folder\\DotNet\\bin)', 'FNMS on-premises: agent versions (from installation-folder\\DotNet\\bin)')}>{t(`.\\ConfigureSystem.exe list-agent-versions   # versiones a las que se puede actualizar
+.\\ConfigureSystem.exe clear-agent-upgrades  # desactiva las actualizaciones automáticas del agente`,
+`.\\ConfigureSystem.exe list-agent-versions   # versions you can upgrade to
+.\\ConfigureSystem.exe clear-agent-upgrades  # turns off automatic agent upgrades`)}</CodeBlock>
+          <DocLinks links={[
+            { label: 'Network Requirements (IT Asset Management)', url: DOC.networkReqs },
+            { label: 'Ports Required by the FlexNet Manager Suite Core Compliance Server', url: DOC.portsKb, note: t('Artículo de la Knowledge Base', 'Knowledge Base article') },
+            { label: 'flxconfig Command Line', url: DOC.flxconfig },
+            { label: 'The FlexNet Inventory Agent can be configured using flxconfig', url: DOC.flxconfigNews },
+            { label: 'http_proxy', url: DOC.httpProxy },
+            { label: 'https_proxy', url: DOC.httpsProxy },
+            { label: 'no_proxy', url: DOC.noProxy },
+            { label: 'Configuring for Proxy Servers (Inventory Beacons)', url: DOC.beaconProxy },
+            { label: 'Specifying Agent Version for Auto-Updates (or Adoption)', url: DOC.versionSpec },
+            { label: 'Agent Third-Party Deployment: Configuring Installations on UNIX-like Platforms', url: DOC.fa3CustomUnix },
+          ]} />
         </div>
       );
     }
@@ -757,6 +1119,15 @@ EOF
         { q: t('Problemas HTTPS en UNIX/macOS', 'HTTPS issues on UNIX/macOS'),
           a: t('UNIX requiere configuración manual de certificados CA (Windows lo hace automáticamente). Si no puedes resolverlo, usa HTTP para bootstrap.',
                'UNIX requires manual CA certificate configuration (Windows does it automatically). If you cannot resolve it, use HTTP for the bootstrap.') },
+        { q: t('El agente de Windows se instala pero no recolecta nada', 'The Windows agent installs but collects nothing'),
+          a: t('Comprueba que INSTALLMACHINEPOLICY esté descomentado y a true en mgssetup.ini (sin él, el agente queda esperando una política) y que la URL de [Custom Install Settings] termine en ManageSoftDL, no sea una ruta UNC y no supere 80 caracteres. Si la URL era incorrecta, el dispositivo no queda gestionado y hay que reinstalar.',
+               'Check that INSTALLMACHINEPOLICY is uncommented and set to true in mgssetup.ini (without it the agent waits for a policy) and that the [Custom Install Settings] URL ends in ManageSoftDL, is not a UNC path and does not exceed 80 characters. If the URL was wrong, the device is not managed and must be reinstalled.') },
+        { q: t('Cómo activar trazas avanzadas (etcp.trace)', 'How to enable advanced tracing (etcp.trace)'),
+          a: t('Edita etcp.trace, que está junto al ejecutable ndtrack (Windows: C:\\Program Files (x86)\\ManageSoft\\etcp.trace; UNIX: /opt/managesoft/etcp.trace). Descomenta una línea "filename=" (borra solo el # inicial) y ajústala, p. ej. filename=C:\\ManageSoft.log en Windows o filename=/tmp/log/mgstrace.log en UNIX.',
+               'Edit etcp.trace, located next to the ndtrack executable (Windows: C:\\Program Files (x86)\\ManageSoft\\etcp.trace; UNIX: /opt/managesoft/etcp.trace). Uncomment a "filename=" line (delete only the leading #) and adjust it, e.g. filename=C:\\ManageSoft.log on Windows or filename=/tmp/log/mgstrace.log on UNIX.') },
+        { q: t('Dónde está tracker.log', 'Where is tracker.log'),
+          a: t('Con el agente completo: en Windows, $(TempDirectory)\\ManageSoft\\tracker.log (el temporal de la cuenta que ejecuta ndtrack); en UNIX-like, /var/opt/managesoft/log/tracker.log cuando ndtrack se ejecuta como root. Con el Inventory Scanner en UNIX: /var/tmp/flexera/log/tracker.log, o /var/tmp/flexera.userName/log/ si no es root.',
+               'With the full agent: on Windows, $(TempDirectory)\\ManageSoft\\tracker.log (the temp folder of the account running ndtrack); on UNIX-like, /var/opt/managesoft/log/tracker.log when ndtrack runs as root. With the Inventory Scanner on UNIX: /var/tmp/flexera/log/tracker.log, or /var/tmp/flexera.userName/log/ if not root.') },
       ];
       return (
         <div>
@@ -773,8 +1144,10 @@ EOF
           <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
             <thead><TRow header cells={[t('Plataforma', 'Platform'), t('Ubicación', 'Location')]} /></thead>
             <tbody>
-              <TRow cells={['Windows', '%ProgramData%\\ManageSoft\\log\\']} />
+              <TRow cells={['Windows', t('%TEMP%\\ManageSoft\\ de la cuenta que ejecuta el componente (servicio: C:\\Windows\\Temp\\ManageSoft\\)', '%TEMP%\\ManageSoft\\ of the account running the component (service: C:\\Windows\\Temp\\ManageSoft\\)')]} />
+              <TRow cells={[t('Windows (datos de trabajo)', 'Windows (working data)'), '%ProgramData%\\ManageSoft Corp\\']} />
               <TRow cells={['Linux / macOS', '/var/opt/managesoft/log/']} />
+              <TRow cells={[t('UNIX-like (ndtrack.sh como usuario no root)', 'UNIX-like (ndtrack.sh as non-root user)'), '/var/tmp/flexera.userName/log/']} />
               <TRow cells={[t('Linux (zero-touch, root)', 'Linux (zero-touch, root)'), '/var/tmp/flexera/log/']} />
               <TRow cells={['Kubernetes Agent', 'kubectl logs <pod-name>']} />
             </tbody>
@@ -783,20 +1156,17 @@ EOF
             {t(<>Monitorea versiones de agentes en la consola web: <strong>Discovery &amp; Inventory → FlexNet Inventory Agent Status</strong>.</>,
                <>Monitor agent versions in the web console: <strong>Discovery &amp; Inventory → FlexNet Inventory Agent Status</strong>.</>)}
           </InfoBox>
-          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{t('Documentación Oficial', 'Official Documentation')}</h3>
-          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 2 }}>
-            {t(<>
-              • <strong>docs.flexera.com</strong> — Documentación oficial de todos los productos Flexera<br/>
-              • <strong>community.flexera.com</strong> — Foros y Knowledge Base<br/>
-              • FlexNet Agent Installation Guide — docs.flexera.com/fnmea/<br/>
-              • FlexNet Inventory Agent &amp; Managed Devices — PDF en la documentación de FNMS
-            </>, <>
-              • <strong>docs.flexera.com</strong> — Official documentation for all Flexera products<br/>
-              • <strong>community.flexera.com</strong> — Forums and Knowledge Base<br/>
-              • FlexNet Agent Installation Guide — docs.flexera.com/fnmea/<br/>
-              • FlexNet Inventory Agent &amp; Managed Devices — PDF in the FNMS documentation
-            </>)}
-          </p>
+          <DocLinks links={[
+            { label: 'docs.flexera.com', url: DOC.home, note: t('Documentación oficial de todos los productos Flexera', 'Official documentation for all Flexera products') },
+            { label: 'community.flexera.com', url: DOC.community, note: t('Foros y Knowledge Base', 'Forums and Knowledge Base') },
+            { label: 'Adopted: Troubleshooting Inventory', url: DOC.fiaTrouble },
+            { label: 'Agent Third-Party Deployment: Troubleshooting Inventory', url: DOC.fa3Trouble },
+            { label: 'Zero-Footprint: Troubleshooting Inventory', url: DOC.zfaTrouble },
+            { label: 'FlexNet Inventory Scanner: Troubleshooting Inventory', url: DOC.fisTrouble },
+            { label: 'LogFile (inventory component)', url: DOC.logFile },
+            { label: 'FlexNet Manager Suite log files and locations', url: DOC.logsKb, note: t('Artículo de la Knowledge Base', 'Knowledge Base article') },
+            { label: 'FlexNet Agent Installation Guide', url: DOC.fnmeaAgent, note: 'FNMEA' },
+          ]} />
           <InfoBox type="danger">
             {t(<>Guía basada en documentación pública de Flexera. Las versiones y comportamientos pueden cambiar. <strong>Consulta siempre la documentación oficial de tu versión específica.</strong></>,
                <>Guide based on Flexera's public documentation. Versions and behavior may change. <strong>Always consult the official documentation for your specific version.</strong></>)}
@@ -805,7 +1175,93 @@ EOF
       );
     }
 
-    /* ─── Main App ─── */
+    /* ─── Section: Resources ─── */
+
+    function ResourcesContent() {
+      const { t } = useLang();
+      const groups = [
+        { title: t('Agente de inventario (FNMS / IT Asset Management)', 'Inventory agent (FNMS / IT Asset Management)'), links: [
+          { label: 'Adopted: System Requirements', url: DOC.fiaSysReqs },
+          { label: 'Core Deployment: System Requirements', url: DOC.coDepSysReqs },
+          { label: 'Zero-Footprint: System Requirements', url: DOC.zfaSysReqs },
+          { label: 'FlexNet Inventory Scanner: System Requirements', url: DOC.fisSysReqs },
+          { label: 'Agent Third-Party Deployment: Implementation', url: DOC.fa3Impl },
+          { label: 'Agent Third-Party Deployment: Edit the Configuration File for Microsoft Windows', url: DOC.fa3SetupIni },
+          { label: 'Agent Third-Party Deployment: Installing FlexNet inventory agent on UNIX', url: DOC.fa3InstallUnix },
+          { label: 'Agent Third-Party Deployment: Configuring Installations on UNIX-like Platforms', url: DOC.fa3CustomUnix },
+          { label: 'Command Lines', url: DOC.commandLines },
+          { label: 'flxconfig Command Line', url: DOC.flxconfig },
+          { label: 'Specifying Agent Version for Auto-Updates (or Adoption)', url: DOC.versionSpec },
+        ] },
+        { title: 'FlexNet Manager for Engineering Applications', links: [
+          { label: 'FlexNet Agent Installation Guide', url: DOC.fnmeaAgent },
+          { label: 'FlexNet Manager for Engineering Applications Installation Guide', url: DOC.fnmeaInstall },
+          { label: 'FlexNet Manager for Engineering Applications Concepts Guide', url: DOC.fnmeaConcept },
+          { label: 'Flexera Product and License Center', url: DOC.plc, note: t('Descarga de instaladores', 'Installer downloads') },
+        ] },
+        { title: t('Kubernetes y contenedores', 'Kubernetes and containers'), links: [
+          { label: 'Two FlexNet Kubernetes Agents', url: DOC.k8sTwo },
+          { label: 'Download Flexera Kubernetes Inventory Agent', url: DOC.k8sDownload },
+          { label: 'Flexera Kubernetes Inventory Agent Configuration Examples', url: DOC.k8sExamples },
+          { label: 'Downloading the Lightweight Kubernetes Agent', url: DOC.lwkDownload },
+          { label: 'Kubernetes Agents Permissions', url: DOC.k8sPermissions },
+          { label: 'Flexera Container Monitor', url: DOC.containerMon },
+        ] },
+        { title: t('Red, logs y Knowledge Base', 'Network, logs and Knowledge Base'), links: [
+          { label: 'Network Requirements (IT Asset Management)', url: DOC.networkReqs },
+          { label: 'Ports Required by the FlexNet Manager Suite Core Compliance Server', url: DOC.portsKb },
+          { label: 'FlexNet Manager Suite log files and locations', url: DOC.logsKb },
+          { label: 'Configuring for Proxy Servers (Inventory Beacons)', url: DOC.beaconProxy },
+          { label: 'Flexera Community', url: DOC.community },
+        ] },
+      ];
+      return (
+        <div>
+          <h2 style={{ color: '#f0f0f0', fontSize: 26, margin: '0 0 8px', fontWeight: 800 }}>{t('Recursos y documentación oficial', 'Resources and official documentation')}</h2>
+          <p style={{ color: '#8892b0', fontSize: 15, lineHeight: 1.8, margin: '0 0 12px' }}>
+            {t(<>Enlaces a la documentación de Flexera que respalda esta guía. El punto de entrada general es <Ext href={DOC.home}>docs.flexera.com</Ext>.</>,
+               <>Links to the Flexera documentation behind this guide. The general entry point is <Ext href={DOC.home}>docs.flexera.com</Ext>.</>)}
+          </p>
+          <InfoBox type="tip">
+            {t(<>Las rutas <code>docs.flexera.com/fnms/EN/…</code> corresponden a IT Asset Management (Cloud); para ediciones On-Premises usa las rutas con versión (p. ej. <code>FlexNetManagerSuite2025R1</code>).</>,
+               <><code>docs.flexera.com/fnms/EN/…</code> paths cover IT Asset Management (Cloud); for On-Premises editions use the versioned paths (e.g. <code>FlexNetManagerSuite2025R1</code>).</>)}
+          </InfoBox>
+          {groups.map((g, i) => (
+            <div key={i}>
+              <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 28 }}>{g.title}</h3>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+                {g.links.map((l, j) => (
+                  <li key={j} style={{ fontSize: 14, lineHeight: 1.6 }}>
+                    <Ext href={l.url}>{l.label}</Ext>
+                    {l.note && <span style={{ color: '#6e7b91' }}> — {l.note}</span>}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          <h3 style={{ color: '#e0e0e0', fontSize: 18, marginTop: 32 }}>{t('Novedades recientes del agente (changelog)', 'Recent agent changes (change log)')}</h3>
+          <p style={{ color: '#8892b0', fontSize: 14, lineHeight: 1.7 }}>
+            {t(<>Extracto del <Ext href={DOC.changelog}>FlexNet Inventory Agent Change Log for IT Visibility</Ext>. Esa numeración (22.x–25.x) corresponde a Flexera One / IT Asset Management; consulta el changelog para versiones posteriores y la documentación de tu edición.</>,
+               <>Excerpt from the <Ext href={DOC.changelog}>FlexNet Inventory Agent Change Log for IT Visibility</Ext>. That numbering (22.x–25.x) belongs to Flexera One / IT Asset Management; check the change log for later versions and the documentation for your edition.</>)}
+          </p>
+          <div style={{ overflowX: 'auto' }}><table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 8 }}>
+            <thead><TRow header cells={[t('Versión', 'Version'), t('Fecha', 'Date'), t('Cambios destacados', 'Notable changes')]} /></thead>
+            <tbody>
+              <TRow cells={['25.0.0', t('Nov 2025', 'Nov 2025'), t('Evidencia de instalador para apps de Windows Store (AppX/MsiX); inventario de procesos más detallado; reconexión del monitor Docker tras reiniciar Docker; preferencia por systemd en Linux; arranque tras reinicio en SUSE; OpenSSL 3.0.18.', 'Installer evidence for Windows Store (AppX/MsiX) apps; more detailed process inventory; Docker monitor reconnection after a Docker restart; systemd preference on Linux; startup after reboot on SUSE; OpenSSL 3.0.18.')]} />
+              <TRow cells={['24.4.0', t('Oct 2025', 'Oct 2025'), t('Se elimina la dependencia de librt.so en Linux; logging de diagnóstico de errores de conexión (WinHTTP 12175); corrección de la comunicación IPv6 con el beacon.', 'librt.so dependency removed on Linux; diagnostic logging for connection errors (WinHTTP 12175); IPv6 beacon communication fix.')]} />
+              <TRow cells={['24.3.0', t('Sep 2025', 'Sep 2025'), t('macOS omite ficheros on-demand de OneDrive; corrección de mayúsculas/minúsculas de ManageSoftDL en URLs de beacon; imágenes de Kubernetes ausentes en All Containers; vulnerabilidades del agente Kubernetes.', 'macOS skips OneDrive on-demand files; case-sensitive ManageSoftDL handling fixed in beacon URLs; Kubernetes images missing from All Containers fixed; Kubernetes agent vulnerabilities addressed.')]} />
+              <TRow cells={['24.2.0', t('Ago 2025', 'Aug 2025'), t('Errores de revocación de certificados en sistemas Unix-like; monitor Podman con UIDs > 2000; pull secrets del chart Helm de KRM; el proxy prioriza la clave de proxy del beacon.', 'Certificate revocation errors reported on Unix-like systems; Podman monitor for user IDs above 2000; KRM Helm chart image pull secrets; proxy settings prioritize the beacon proxy key.')]} />
+              <TRow cells={['24.1.1', t('Jul 2025', 'Jul 2025'), t('Web metering de SaaS en Windows y Mac (requiere FlexNet Beacon 24.1.1 o superior); reconocimiento de apps macOS con editor; servicios Podman/Docker que no arrancaban (afectaba a 23.5.0–24.1.0).', 'SaaS web metering on Windows and Mac (requires FlexNet Beacon 24.1.1 or higher); macOS app recognition with publisher; Podman/Docker services not starting fixed (affected 23.5.0–24.1.0).')]} />
+              <TRow cells={['24.1.0', t('Jul 2025', 'Jul 2025'), t('Información de actualizaciones de seguridad del SO en RHEL, macOS y Windows; la versión del chart Helm aumenta en cada release; corrección de la descarga incompleta de CRL (afectaba a 23.0.0–24.0.0).', 'Security-related OS update information on RHEL, macOS and Windows; Helm chart version increments with every release; incomplete CRL retrieval fixed (affected 23.0.0–24.0.0).')]} />
+              <TRow cells={['22.2.0', t('Ago 2024', 'Aug 2024'), t('Nuevo componente flxconfig para la configuración del agente; actualización automática en distribuciones basadas en Debian.', 'New flxconfig component for agent configuration; automatic upgrade on Debian-based distributions.')]} />
+            </tbody>
+          </table></div>
+        </div>
+      );
+    }
+
+    /* ─── Main App ─── */    /* ─── Main App ─── */
 
     const CONTENT = {
       overview: OverviewContent,
@@ -815,6 +1271,7 @@ EOF
       containers: ContainersContent,
       config: ConfigContent,
       troubleshooting: TroubleshootingContent,
+      resources: ResourcesContent,
     };
 
     function App() {
@@ -842,6 +1299,7 @@ EOF
         { id: 'containers', title: t('Contenedores', 'Containers'), icon: '📦' },
         { id: 'config',   title: t('Configuración', 'Configuration'), icon: '⚙️' },
         { id: 'troubleshooting', title: t('Problemas', 'Troubleshooting'), icon: '🔧' },
+        { id: 'resources', title: t('Recursos', 'Resources'), icon: '📚' },
       ];
       const Content = CONTENT[active];
 
