@@ -28,18 +28,6 @@ Guía de referencia sobre la instalación y configuración de los agentes de Fle
 
 Cada sección incluye enlaces a la documentación oficial de Flexera.
 
-### Ejecutar en local
-
-No hay paso de compilación: es un único `index.html`.
-
-```bash
-git clone https://github.com/ServerHeaven/flexera-agents-guide.git
-cd flexera-agents-guide
-python3 -m http.server 8000
-# abre http://localhost:8000
-```
-
-> React, ReactDOM y Babel se cargan desde un CDN (cdnjs), por lo que la página necesita conexión a Internet.
 
 ### Estructura y mantenimiento
 
@@ -71,19 +59,6 @@ Reference guide for installing and configuring Flexera agents on **Windows, Linu
 | Resources | Official documentation index and agent change log |
 
 Every section links to the official Flexera documentation.
-
-### Run locally
-
-There is no build step: the site is a single `index.html`.
-
-```bash
-git clone https://github.com/ServerHeaven/flexera-agents-guide.git
-cd flexera-agents-guide
-python3 -m http.server 8000
-# open http://localhost:8000
-```
-
-> React, ReactDOM and Babel are loaded from a CDN (cdnjs), so the page needs an Internet connection.
 
 ### Structure and maintenance
 
